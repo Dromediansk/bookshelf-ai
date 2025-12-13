@@ -11,12 +11,9 @@ export default function DashboardScreen() {
   const hasHydrated = useBooksStore((s) => s.hasHydrated);
 
   return (
-    <SafeAreaView className="relative flex-1 bg-surface">
-      <View className="px-screen pb-3 pt-4">
-        <Text className="text-2xl font-sansSemibold text-text">
-          Your Library
-        </Text>
-        <Text className="mt-1 text-sm font-sans text-text-muted">
+    <SafeAreaView className="relative flex-1">
+      <View className="px-screen">
+        <Text className="text-lg font-sans">
           {hasHydrated
             ? `${books.length} book${books.length === 1 ? "" : "s"}`
             : "Loading…"}

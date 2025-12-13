@@ -13,8 +13,6 @@ export default function AddBookScreen() {
 
   return (
     <BookForm
-      screenTitle="Add Book"
-      screenSubtitle="Start with the book name. You can fill the rest manually."
       submitLabel="Save"
       onSubmit={(values) => {
         const nowIso = new Date().toISOString();

@@ -3,11 +3,11 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import {
   useFonts,
-  Inter_400Regular,
-  Inter_500Medium,
-  Inter_600SemiBold,
-  Inter_700Bold,
-} from "@expo-google-fonts/inter";
+  Montserrat_400Regular,
+  Montserrat_500Medium,
+  Montserrat_600SemiBold,
+  Montserrat_700Bold,
+} from "@expo-google-fonts/montserrat";
 
 void SplashScreen.preventAutoHideAsync().catch(() => {
   // no-op: avoids unhandled promise warnings during fast refresh
@@ -15,10 +15,10 @@ void SplashScreen.preventAutoHideAsync().catch(() => {
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
-    Inter_400Regular,
-    Inter_500Medium,
-    Inter_600SemiBold,
-    Inter_700Bold,
+    Montserrat_400Regular,
+    Montserrat_500Medium,
+    Montserrat_600SemiBold,
+    Montserrat_700Bold,
   });
 
   useEffect(() => {
@@ -31,13 +31,12 @@ export default function RootLayout() {
   return (
     <Stack
       screenOptions={{
-        headerTitle: "Bookshelf",
         headerTitleStyle: {
-          fontFamily: "Inter_600SemiBold",
+          fontFamily: "Montserrat_600SemiBold",
         },
       }}
     >
-      <Stack.Screen name="index" options={{ title: "Dashboard" }} />
+      <Stack.Screen name="index" options={{ title: "Your Library" }} />
       <Stack.Screen name="add-book" options={{ title: "Add Book" }} />
       <Stack.Screen name="edit-book" options={{ title: "Edit Book" }} />
     </Stack>

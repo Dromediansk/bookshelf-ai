@@ -12,9 +12,9 @@ module.exports = {
     extend: {
       colors: {
         brand: {
-          DEFAULT: colors.indigo[600],
-          pressed: colors.indigo[700],
-          subtle: colors.indigo[50],
+          DEFAULT: colors.emerald[600],
+          pressed: colors.emerald[700],
+          subtle: colors.emerald[50],
         },
         surface: {
           DEFAULT: colors.white,
@@ -31,14 +31,14 @@ module.exports = {
           strong: colors.slate[300],
         },
         success: {
-          bg: colors.emerald[100],
-          border: colors.emerald[200],
-          text: colors.emerald[900],
+          bg: colors.green[100],
+          border: colors.green[200],
+          text: colors.green[900],
         },
         info: {
-          bg: colors.sky[100],
-          border: colors.sky[200],
-          text: colors.sky[900],
+          bg: colors.blue[100],
+          border: colors.blue[200],
+          text: colors.blue[900],
         },
         warning: {
           bg: colors.amber[100],
@@ -62,10 +62,10 @@ module.exports = {
         control: "12px",
       },
       fontFamily: {
-        sans: ["Inter_400Regular", "System"],
-        sansMedium: ["Inter_500Medium", "System"],
-        sansSemibold: ["Inter_600SemiBold", "System"],
-        sansBold: ["Inter_700Bold", "System"],
+        sans: ["Montserrat_400Regular", "System"],
+        sansMedium: ["Montserrat_500Medium", "System"],
+        sansSemibold: ["Montserrat_600SemiBold", "System"],
+        sansBold: ["Montserrat_700Bold", "System"],
       },
     },
   },

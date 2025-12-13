@@ -68,8 +68,6 @@ export default function EditBookScreen() {
       />
 
       <BookForm
-        screenTitle="Edit Book"
-        screenSubtitle="Update the details and save your changes."
         submitLabel="Save"
         initialValues={{
           title: book.title,
