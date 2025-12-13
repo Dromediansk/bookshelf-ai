@@ -31,7 +31,7 @@ const STATUS_META: Record<
   },
 };
 
-export function StatusBadge({ status }: StatusBadgeProps) {
+export const StatusBadge = ({ status }: StatusBadgeProps) => {
   const meta = STATUS_META[status];
 
   return (
@@ -41,4 +41,4 @@ export function StatusBadge({ status }: StatusBadgeProps) {
       </Text>
     </View>
   );
-}
+};

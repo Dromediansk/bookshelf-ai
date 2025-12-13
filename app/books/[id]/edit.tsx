@@ -1,5 +1,4 @@
 import { Text, View, Pressable } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -11,7 +10,7 @@ function normalizeId(id: string | string[] | undefined) {
   return Array.isArray(id) ? id[0] : id;
 }
 
-export default function EditBookScreen() {
+export const EditBookScreen = () => {
   const params = useLocalSearchParams<{ id?: string | string[] }>();
   const bookId = normalizeId(params.id);
 
@@ -22,12 +21,12 @@ export default function EditBookScreen() {
   function onDelete() {
     if (!book) return;
     removeBook(book.id);
-    router.back();
+    router.replace("/");
   }
 
   if (!bookId || !book) {
     return (
-      <SafeAreaView className="flex-1 bg-surface">
+      <View className="flex-1 bg-surface py-screen">
         <View className="flex-1 items-center justify-center px-screen">
           <Text className="text-base font-sansMedium text-text">
             Book not found
@@ -46,7 +45,7 @@ export default function EditBookScreen() {
             </Text>
           </Pressable>
         </View>
-      </SafeAreaView>
+      </View>
     );
   }
 
@@ -54,6 +53,7 @@ export default function EditBookScreen() {
     <>
       <Stack.Screen
         options={{
+          title: "Edit Book",
           headerRight: () => (
             <Pressable
               onPress={onDelete}
@@ -79,7 +79,7 @@ export default function EditBookScreen() {
           updateBook(book.id, {
             title: values.title,
             author: values.author || "Unknown",
-            genre: values.genre || "Unknown",
+            genre: values.genre,
             status: values.status,
           });
           router.back();
@@ -88,4 +88,6 @@ export default function EditBookScreen() {
       />
     </>
   );
-}
+};
+
+export default EditBookScreen;

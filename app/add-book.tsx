@@ -8,7 +8,7 @@ function makeId() {
   return `bk_${Date.now()}_${Math.random().toString(16).slice(2)}`;
 }
 
-export default function AddBookScreen() {
+export const AddBookScreen = () => {
   const addBook = useBooksStore((s) => s.addBook);
 
   return (
@@ -21,9 +21,10 @@ export default function AddBookScreen() {
           id: makeId(),
           title: values.title,
           author: values.author || "Unknown",
-          genre: values.genre || "Unknown",
+          genre: values.genre,
           status: values.status,
           createdAt: nowIso,
+          description: "",
         };
 
         addBook(book);
@@ -32,4 +33,6 @@ export default function AddBookScreen() {
       onCancel={() => router.back()}
     />
   );
-}
+};
+
+export default AddBookScreen;

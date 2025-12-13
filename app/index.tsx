@@ -1,17 +1,16 @@
 import { FlatList, Pressable, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 import { BookCard } from "@/components/BookCard";
 import { useBooksStore } from "@/store/booksStore";
 
-export default function DashboardScreen() {
+export const HomeScreen = () => {
   const books = useBooksStore((s) => s.books);
   const hasHydrated = useBooksStore((s) => s.hasHydrated);
 
   return (
-    <SafeAreaView className="relative flex-1">
+    <View className="relative flex-1 py-screen">
       <View className="px-screen">
         <Text className="text-lg font-sans">
           {hasHydrated
@@ -56,6 +55,8 @@ export default function DashboardScreen() {
           <Ionicons name="add" size={28} color="#fff" />
         </Pressable>
       </View>
-    </SafeAreaView>
+    </View>
   );
-}
+};
+
+export default HomeScreen;

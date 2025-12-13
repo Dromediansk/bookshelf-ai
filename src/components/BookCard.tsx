@@ -8,15 +8,15 @@ type BookCardProps = {
   book: Book;
 };
 
-export function BookCard({ book }: BookCardProps) {
+export const BookCard = ({ book }: BookCardProps) => {
   return (
     <Pressable
       onPress={() =>
-        router.push({ pathname: "/edit-book", params: { id: book.id } })
+        router.push({ pathname: "/books/[id]", params: { id: book.id } })
       }
       className="rounded-card border border-border bg-surface px-card py-card"
       accessibilityRole="button"
-      accessibilityLabel={`Edit ${book.title}`}
+      accessibilityLabel={`View details for ${book.title}`}
     >
       <View className="flex-row items-start justify-between gap-3">
         <View className="flex-1">
@@ -44,4 +44,4 @@ export function BookCard({ book }: BookCardProps) {
       </View>
     </Pressable>
   );
-}
+};

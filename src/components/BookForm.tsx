@@ -1,13 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
-import type { BookStatus } from "@/types/book";
+import { BOOK_GENRES, type BookGenre, type BookStatus } from "@/types/book";
 
 export type BookFormValues = {
   title: string;
   author: string;
-  genre: string;
+  genre: BookGenre;
   status: BookStatus;
 };
 
@@ -24,26 +23,24 @@ const STATUSES: Array<{ value: BookStatus; label: string }> = [
   { value: "read", label: "Read" },
 ];
 
-const GENRES: Array<{ value: string; label: string }> = [
-  { value: "", label: "Not set" },
-  { value: "Sci-Fi", label: "Sci-Fi" },
-  { value: "Fantasy", label: "Fantasy" },
-  { value: "Mystery", label: "Mystery" },
-  { value: "Romance", label: "Romance" },
-  { value: "Nonfiction", label: "Nonfiction" },
-  { value: "Biography", label: "Biography" },
-  { value: "History", label: "History" },
-];
+const GENRES: Array<{ value: BookGenre; label: string }> = BOOK_GENRES.map(
+  (g) => ({
+    value: g,
+    label: g === "Unknown" ? "Not set" : g,
+  })
+);
 
-export function BookForm({
+export const BookForm = ({
   submitLabel = "Save",
   initialValues,
   onSubmit,
   onCancel,
-}: BookFormProps) {
+}: BookFormProps) => {
   const [title, setTitle] = useState(initialValues?.title ?? "");
   const [author, setAuthor] = useState(initialValues?.author ?? "");
-  const [genre, setGenre] = useState(initialValues?.genre ?? "");
+  const [genre, setGenre] = useState<BookGenre>(
+    initialValues?.genre ?? "Unknown"
+  );
   const [status, setStatus] = useState<BookStatus>(
     initialValues?.status ?? "to-read"
   );
@@ -51,7 +48,7 @@ export function BookForm({
   useEffect(() => {
     setTitle(initialValues?.title ?? "");
     setAuthor(initialValues?.author ?? "");
-    setGenre(initialValues?.genre ?? "");
+    setGenre(initialValues?.genre ?? "Unknown");
     setStatus(initialValues?.status ?? "to-read");
   }, [
     initialValues?.title,
@@ -68,7 +65,7 @@ export function BookForm({
     onSubmit({
       title: title.trim(),
       author: author.trim(),
-      genre: genre.trim(),
+      genre,
       status,
     });
   }
@@ -110,10 +107,9 @@ export function BookForm({
           <View className="flex-row flex-wrap gap-2">
             {GENRES.map((g) => {
               const selected = g.value === genre;
-              const key = g.value.length > 0 ? g.value : "__unset__";
               return (
                 <Pressable
-                  key={key}
+                  key={g.value}
                   onPress={() => setGenre(g.value)}
                   className={
                     selected
@@ -207,4 +203,4 @@ export function BookForm({
       </View>
     </View>
   );
-}
+};
