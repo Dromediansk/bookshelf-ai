@@ -1,6 +1,6 @@
 import { router } from "expo-router";
 
-import { BookForm } from "@/components/BookForm";
+import { BookForm, BookFormValues } from "@/components/BookForm";
 import { useBooksStore } from "@/store/booksStore";
 import type { Book } from "@/types/book";
 
@@ -11,25 +11,27 @@ function makeId() {
 export const AddBookScreen = () => {
   const addBook = useBooksStore((s) => s.addBook);
 
+  const handleSubmit = (values: BookFormValues) => {
+    const nowIso = new Date().toISOString();
+
+    const book: Book = {
+      id: makeId(),
+      title: values.title,
+      author: values.author || "Unknown",
+      genre: values.genre,
+      status: values.status,
+      createdAt: nowIso,
+      notes: [],
+    };
+
+    addBook(book);
+    router.back();
+  };
+
   return (
     <BookForm
       submitLabel="Save"
-      onSubmit={(values) => {
-        const nowIso = new Date().toISOString();
-
-        const book: Book = {
-          id: makeId(),
-          title: values.title,
-          author: values.author || "Unknown",
-          genre: values.genre,
-          status: values.status,
-          createdAt: nowIso,
-          description: "",
-        };
-
-        addBook(book);
-        router.back();
-      }}
+      onSubmit={handleSubmit}
       onCancel={() => router.back()}
     />
   );
