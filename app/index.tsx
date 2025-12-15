@@ -6,8 +6,7 @@ import { BookCard } from "@/components/BookCard";
 import { useBooksStore } from "@/store/booksStore";
 
 export const HomeScreen = () => {
-  const books = useBooksStore((s) => s.books);
-  const hasHydrated = useBooksStore((s) => s.hasHydrated);
+  const { books, hasHydrated } = useBooksStore();
 
   return (
     <View className="relative flex-1 py-screen">

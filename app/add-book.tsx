@@ -1,27 +1,24 @@
 import { router } from "expo-router";
+import { v4 as uuidv4 } from "uuid";
 
 import { BookForm, BookFormValues } from "@/components/BookForm";
 import { useBooksStore } from "@/store/booksStore";
 import type { Book } from "@/types/book";
 
-function makeId() {
-  return `bk_${Date.now()}_${Math.random().toString(16).slice(2)}`;
-}
-
 export const AddBookScreen = () => {
-  const addBook = useBooksStore((s) => s.addBook);
+  const { addBook } = useBooksStore();
 
   const handleSubmit = (values: BookFormValues) => {
     const nowIso = new Date().toISOString();
 
     const book: Book = {
-      id: makeId(),
+      id: uuidv4(),
       title: values.title,
       author: values.author || "Unknown",
       genre: values.genre,
       status: values.status,
       createdAt: nowIso,
-      notes: [],
+      noteIds: [],
     };
 
     addBook(book);

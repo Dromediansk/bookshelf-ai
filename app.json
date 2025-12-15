@@ -1,17 +1,14 @@
 {
   "expo": {
-    "name": "client",
-    "slug": "client",
+    "name": "Readnest",
+    "slug": "readnest",
     "version": "1.0.0",
-    "scheme": "bookshelf-ai",
+    "scheme": "readnest",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "plugins": [
-      "expo-router",
-      "expo-font"
-    ],
+    "plugins": ["expo-router", "expo-font"],
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",

@@ -1,4 +1,5 @@
 import { useBooksStore } from "@/store/booksStore";
+import { useNotesStore } from "@/store/notesStore";
 import { Book } from "@/types/book";
 import { toTime } from "@/utils/helpers";
 import { FC, useMemo, useState } from "react";
@@ -18,11 +19,10 @@ type NotesSectionProps = {
 };
 
 export const NotesSection: FC<NotesSectionProps> = ({ book }) => {
-  const { id } = book;
+  const { id, noteIds } = book;
   const { height: windowHeight } = useWindowDimensions();
-  const hasHydrated = useBooksStore((s) => s.hasHydrated);
-  const addNote = useBooksStore((s) => s.addNote);
-  const updateNote = useBooksStore((s) => s.updateNote);
+  const { hasHydrated } = useBooksStore();
+  const { addNote, updateNote, getNotesByIds } = useNotesStore();
 
   const [noteMode, setNoteMode] = useState<NoteMode>("none");
   const [editingNoteId, setEditingNoteId] = useState<string | undefined>();
@@ -36,9 +36,11 @@ export const NotesSection: FC<NotesSectionProps> = ({ book }) => {
     setDraftTags("");
   }
 
-  const notes = Array.isArray((book as { notes?: unknown }).notes)
-    ? book.notes
-    : [];
+  const notes = useMemo(() => {
+    if (!noteIds.length) return [];
+    return getNotesByIds(noteIds);
+  }, [getNotesByIds, noteIds]);
+
   const sortedNotes = [...notes].sort(
     (a, b) => toTime(b.createdAt) - toTime(a.createdAt)
   );

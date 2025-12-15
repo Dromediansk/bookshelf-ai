@@ -6,16 +6,16 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { useBooksStore } from "@/store/booksStore";
 import { NotesSection } from "@/components/NotesSection";
 
-function normalizeId(id: string | string[] | undefined) {
-  if (!id) return undefined;
-  return Array.isArray(id) ? id[0] : id;
-}
+type BookDetailScreenParams = {
+  id: string;
+};
 
 export const BookDetailScreen = () => {
-  const params = useLocalSearchParams<{ id?: string | string[] }>();
-  const bookId = normalizeId(params.id);
+  const params = useLocalSearchParams<BookDetailScreenParams>();
+  const bookId = params.id;
 
-  const book = useBooksStore((s) => s.books.find((b) => b.id === bookId));
+  const { getBookById } = useBooksStore();
+  const book = getBookById(bookId);
 
   if (!bookId || !book) {
     return (

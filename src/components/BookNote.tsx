@@ -1,4 +1,5 @@
 import { useBooksStore } from "@/store/booksStore";
+import { useNotesStore } from "@/store/notesStore";
 import { Note } from "@/types/note";
 import { toTime } from "@/utils/helpers";
 import { FC } from "react";
@@ -32,8 +33,8 @@ const BookNote: FC<BookNoteProps> = ({
   noteMode,
   editingNoteId,
 }) => {
-  const hasHydrated = useBooksStore((s) => s.hasHydrated);
-  const removeNote = useBooksStore((s) => s.removeNote);
+  const { hasHydrated } = useBooksStore();
+  const { deleteNote } = useNotesStore();
 
   const dateLabel = formatNoteDate(note.createdAt);
 
@@ -95,7 +96,7 @@ const BookNote: FC<BookNoteProps> = ({
             if (noteMode === "edit" && editingNoteId === note.id) {
               onResetDraft();
             }
-            removeNote(bookId, note.id);
+            deleteNote(bookId, note.id);
           }}
           disabled={!hasHydrated}
           className={

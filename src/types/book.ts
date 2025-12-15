@@ -1,5 +1,3 @@
-import { Note } from "./note";
-
 export const BOOK_STATUSES = ["to-read", "reading", "read"] as const;
 export type BookStatus = (typeof BOOK_STATUSES)[number];
 
@@ -24,5 +22,5 @@ export type Book = {
   createdAt: string;
   description?: string;
   cover?: string;
-  notes: Note[];
+  noteIds: string[];
 };

@@ -1,6 +1,6 @@
 import { Note } from "@/types/note";
 
-export const MOCK_NOTES_1: Note[] = [
+export const MOCK_NOTES: Note[] = [
   {
     id: "note_001",
     bookId: "bk_001",

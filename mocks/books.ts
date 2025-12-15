@@ -1,5 +1,4 @@
 import { Book } from "@/types/book";
-import { MOCK_NOTES_1 } from "./notes";
 
 export const MOCK_BOOKS: Book[] = [
   {
@@ -10,7 +9,7 @@ export const MOCK_BOOKS: Book[] = [
     status: "reading",
     createdAt: "2025-12-01T09:00:00.000Z",
     description: "A thrilling sci-fi adventure about a lone astronaut.",
-    notes: MOCK_NOTES_1,
+    noteIds: ["note_001", "note_002"],
   },
   {
     id: "bk_002",
@@ -21,7 +20,7 @@ export const MOCK_BOOKS: Book[] = [
     createdAt: "2025-11-20T18:30:00.000Z",
     description:
       "An epic fantasy tale of a gifted young musician and magician.",
-    notes: [],
+    noteIds: [],
   },
   {
     id: "bk_003",
@@ -31,7 +30,7 @@ export const MOCK_BOOKS: Book[] = [
     status: "read",
     createdAt: "2025-10-02T07:15:00.000Z",
     description: "A guide to building good habits and breaking bad ones.",
-    notes: [],
+    noteIds: [],
   },
   {
     id: "bk_004",
@@ -41,6 +40,6 @@ export const MOCK_BOOKS: Book[] = [
     status: "to-read",
     createdAt: "2025-12-10T12:00:00.000Z",
     description: "A science fiction saga set on the desert planet Arrakis.",
-    notes: [],
+    noteIds: [],
   },
 ];

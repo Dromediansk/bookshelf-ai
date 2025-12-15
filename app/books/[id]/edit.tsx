@@ -5,18 +5,16 @@ import { Ionicons } from "@expo/vector-icons";
 import { BookForm } from "@/components/BookForm";
 import { useBooksStore } from "@/store/booksStore";
 
-function normalizeId(id: string | string[] | undefined) {
-  if (!id) return undefined;
-  return Array.isArray(id) ? id[0] : id;
-}
+type EditBookScreenParams = {
+  id: string;
+};
 
 export const EditBookScreen = () => {
-  const params = useLocalSearchParams<{ id?: string | string[] }>();
-  const bookId = normalizeId(params.id);
+  const params = useLocalSearchParams<EditBookScreenParams>();
+  const bookId = params.id;
 
-  const book = useBooksStore((s) => s.books.find((b) => b.id === bookId));
-  const updateBook = useBooksStore((s) => s.updateBook);
-  const removeBook = useBooksStore((s) => s.removeBook);
+  const { getBookById, updateBook, removeBook } = useBooksStore();
+  const book = getBookById(bookId);
 
   function onDelete() {
     if (!book) return;
