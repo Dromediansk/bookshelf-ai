@@ -9,11 +9,8 @@ import {
   Montserrat_600SemiBold,
   Montserrat_700Bold,
 } from "@expo-google-fonts/montserrat";
-import { View } from "react-native";
 
-void SplashScreen.preventAutoHideAsync().catch(() => {
-  // no-op: avoids unhandled promise warnings during fast refresh
-});
+SplashScreen.preventAutoHideAsync();
 
 export const RootLayout = () => {
   const [fontsLoaded] = useFonts({
@@ -25,7 +22,7 @@ export const RootLayout = () => {
 
   useEffect(() => {
     if (!fontsLoaded) return;
-    void SplashScreen.hideAsync();
+    SplashScreen.hideAsync();
   }, [fontsLoaded]);
 
   if (!fontsLoaded) return null;

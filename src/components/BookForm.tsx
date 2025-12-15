@@ -17,18 +17,16 @@ type BookFormProps = {
   onCancel: () => void;
 };
 
-const STATUSES: Array<{ value: BookStatus; label: string }> = [
+const STATUSES: { value: BookStatus; label: string }[] = [
   { value: "to-read", label: "To Read" },
   { value: "reading", label: "Reading" },
   { value: "read", label: "Read" },
 ];
 
-const GENRES: Array<{ value: BookGenre; label: string }> = BOOK_GENRES.map(
-  (g) => ({
-    value: g,
-    label: g === "Unknown" ? "Not set" : g,
-  })
-);
+const GENRES: { value: BookGenre; label: string }[] = BOOK_GENRES.map((g) => ({
+  value: g,
+  label: g === "Unknown" ? "Not set" : g,
+}));
 
 export const BookForm = ({
   submitLabel = "Save",

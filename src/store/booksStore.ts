@@ -35,17 +35,18 @@ export const useBooksStore = create<BooksState>()(
       updateBook: (id, updates) =>
         set((state) => ({
           books: state.books.map((book) =>
-            book.id === id ? { ...book, ...updates } : book
+            book.id === id ? { ...book, ...updates } : book,
           ),
         })),
 
       removeBook: (id) => {
         // Cascade delete notes for this book.
         const { useNotesStore } =
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
           require("@/store/notesStore") as typeof import("@/store/notesStore");
         const notesState = useNotesStore.getState();
         notesState.setNotes(
-          notesState.notes.filter((note) => note.bookId !== id)
+          notesState.notes.filter((note) => note.bookId !== id),
         );
 
         set((state) => ({
@@ -64,6 +65,6 @@ export const useBooksStore = create<BooksState>()(
       onRehydrateStorage: () => (state, error) => {
         state?.setHasHydrated(true);
       },
-    }
-  )
+    },
+  ),
 );

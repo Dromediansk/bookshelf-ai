@@ -42,7 +42,7 @@ export const NotesSection: FC<NotesSectionProps> = ({ book }) => {
   }, [getNotesByIds, noteIds]);
 
   const sortedNotes = [...notes].sort(
-    (a, b) => toTime(b.createdAt) - toTime(a.createdAt)
+    (a, b) => toTime(b.createdAt) - toTime(a.createdAt),
   );
 
   const notesCountLabel =
@@ -50,7 +50,7 @@ export const NotesSection: FC<NotesSectionProps> = ({ book }) => {
 
   const canSaveNote = useMemo(
     () => hasHydrated && draftContent.trim().length > 0,
-    [draftContent, hasHydrated]
+    [draftContent, hasHydrated],
   );
 
   const notesListMaxHeight = useMemo(() => {

@@ -33,8 +33,8 @@ function normalizeTags(tags: string[] | string | undefined): string[] {
   const values = Array.isArray(tags)
     ? tags
     : typeof tags === "string"
-    ? tags.split(",")
-    : [];
+      ? tags.split(",")
+      : [];
 
   const result: string[] = [];
   const seen = new Set<string>();
