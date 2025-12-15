@@ -39,7 +39,7 @@ export const EditBookScreen = () => {
 
   if (!bookId || !book) {
     return (
-      <View className="flex-1 bg-surface py-screen">
+      <View className="flex-1 bg-surface py-2">
         <View className="flex-1 items-center justify-center px-2">
           <Text className="text-base font-sansMedium text-text">
             Book not found

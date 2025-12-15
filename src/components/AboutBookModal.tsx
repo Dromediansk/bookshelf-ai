@@ -20,7 +20,7 @@ export function AboutBookModal({
       onRequestClose={onClose}
     >
       <Pressable
-        className="flex-1 bg-text/30 px-2 py-screen"
+        className="flex-1 bg-text/30 px-2 py-2"
         onPress={onClose}
         accessibilityRole="button"
         accessibilityLabel="Close about modal"

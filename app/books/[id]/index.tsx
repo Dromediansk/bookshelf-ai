@@ -7,7 +7,6 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { useBooksStore } from "@/store/booksStore";
 import { NotesSection } from "@/components/NotesSection";
 import { AboutBookModal } from "@/components/AboutBookModal";
-import { NoteMode } from "@/types/note";
 import { useState } from "react";
 
 type BookDetailScreenParams = {
@@ -21,14 +20,13 @@ export const BookDetailScreen = () => {
   const bookId = params.id;
 
   const [isAboutOpen, setIsAboutOpen] = useState(false);
-  const [noteMode, setNoteMode] = useState<NoteMode>("none");
 
   const { getBookById } = useBooksStore();
   const book = getBookById(bookId);
 
   if (!bookId || !book) {
     return (
-      <View className="flex-1 bg-surface py-screen">
+      <View className="flex-1 bg-surface py-2">
         <View className="flex-1 items-center justify-center px-2">
           <Text className="text-base font-sansMedium text-text">
             Book not found
@@ -54,7 +52,7 @@ export const BookDetailScreen = () => {
   const { id, title, author, genre, status, description } = book;
 
   return (
-    <View className="flex-1 bg-surface-muted py-screen">
+    <View className="flex-1 bg-surface-muted py-2">
       <Stack.Screen
         options={{
           title,
@@ -77,46 +75,40 @@ export const BookDetailScreen = () => {
       />
 
       <View className="flex-1 px-2">
-        {noteMode === "none" && (
-          <>
-            <View className="rounded-card border border-border bg-brand-subtle px-card py-card">
-              <View className="flex-row items-start justify-between gap-3">
-                <View className="flex-1">
-                  <Text className="text-2xl font-sansBold text-text">
-                    {title}
-                  </Text>
-                  {!!author?.trim() && (
-                    <Text className="mt-2 text-sm font-sans text-text-muted">
-                      {author}
-                    </Text>
-                  )}
-                </View>
-                <StatusBadge status={status} />
-              </View>
-
-              <View className="mt-4 flex-row items-center justify-between gap-3">
-                <View className="rounded-full border border-brand bg-surface px-card py-2">
-                  <Text className="text-sm font-sansSemibold text-text">
-                    {genre === "Unknown" ? "Genre: Not set" : `Genre: ${genre}`}
-                  </Text>
-                </View>
-
-                <Pressable
-                  onPress={() => setIsAboutOpen(true)}
-                  accessibilityRole="button"
-                  accessibilityLabel="About the book"
-                  hitSlop={10}
-                >
-                  <TailwindIonicons
-                    name="information-circle-outline"
-                    size={22}
-                    className="text-brand"
-                  />
-                </Pressable>
-              </View>
+        <View className="rounded-card border border-border bg-brand-subtle px-card py-card">
+          <View className="flex-row items-start justify-between gap-3">
+            <View className="flex-1">
+              <Text className="text-2xl font-sansBold text-text">{title}</Text>
+              {!!author?.trim() && (
+                <Text className="mt-2 text-sm font-sans text-text-muted">
+                  {author}
+                </Text>
+              )}
             </View>
-          </>
-        )}
+            <StatusBadge status={status} />
+          </View>
+
+          <View className="mt-4 flex-row items-center justify-between gap-3">
+            <View className="rounded-full border border-brand bg-surface px-card py-2">
+              <Text className="text-sm font-sansSemibold text-text">
+                {genre === "Unknown" ? "Genre: Not set" : `Genre: ${genre}`}
+              </Text>
+            </View>
+
+            <Pressable
+              onPress={() => setIsAboutOpen(true)}
+              accessibilityRole="button"
+              accessibilityLabel="About the book"
+              hitSlop={10}
+            >
+              <TailwindIonicons
+                name="information-circle-outline"
+                size={22}
+                className="text-brand"
+              />
+            </Pressable>
+          </View>
+        </View>
 
         <AboutBookModal
           visible={isAboutOpen}
@@ -124,11 +116,7 @@ export const BookDetailScreen = () => {
           description={description}
         />
 
-        <NotesSection
-          book={book}
-          noteMode={noteMode}
-          setNoteMode={setNoteMode}
-        />
+        <NotesSection book={book} />
       </View>
     </View>
   );

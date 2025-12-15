@@ -3,16 +3,13 @@ import { useNotesStore } from "@/store/notesStore";
 import { Note } from "@/types/note";
 import { toTime } from "@/utils/helpers";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { FC } from "react";
 import { Pressable, Text, View } from "react-native";
 
 type BookNoteProps = {
   bookId: string;
   note: Note;
-  onStartEdit: (note: Note) => void;
-  onResetDraft: () => void;
-  noteMode: "none" | "add" | "edit";
-  editingNoteId?: string;
 };
 
 function formatNoteDate(value: string | undefined) {
@@ -26,14 +23,7 @@ function formatNoteDate(value: string | undefined) {
   });
 }
 
-const BookNote: FC<BookNoteProps> = ({
-  bookId,
-  note,
-  onStartEdit,
-  onResetDraft,
-  noteMode,
-  editingNoteId,
-}) => {
+const BookNote: FC<BookNoteProps> = ({ bookId, note }) => {
   const { hasHydrated } = useBooksStore();
   const { deleteNote } = useNotesStore();
 
@@ -42,7 +32,12 @@ const BookNote: FC<BookNoteProps> = ({
   return (
     <Pressable
       key={note.id}
-      onPress={() => onStartEdit(note)}
+      onPress={() =>
+        router.push({
+          pathname: "/books/[id]/notes/[noteId]/edit",
+          params: { id: bookId, noteId: note.id },
+        })
+      }
       disabled={!hasHydrated}
       className="rounded-card border border-border bg-surface-muted px-card py-card"
       accessibilityRole="button"
@@ -76,9 +71,6 @@ const BookNote: FC<BookNoteProps> = ({
             onPress={(event) => {
               event.stopPropagation?.();
               if (!hasHydrated) return;
-              if (noteMode === "edit" && editingNoteId === note.id) {
-                onResetDraft();
-              }
               deleteNote(bookId, note.id);
             }}
             disabled={!hasHydrated}

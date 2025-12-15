@@ -10,7 +10,7 @@ export const HomeScreen = () => {
 
   return (
     <View className="relative flex-1 py-screen">
-      <View className="px-2">
+      <View className="px-2 pb-2">
         <Text className="text-lg font-sans">
           {hasHydrated
             ? `${books.length} book${books.length === 1 ? "" : "s"}`

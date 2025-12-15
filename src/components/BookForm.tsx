@@ -69,7 +69,7 @@ export const BookForm = ({
   }
 
   return (
-    <View className="flex-1 justify-between px-2 py-screen">
+    <View className="flex-1 justify-between px-2 py-2">
       <View>
         <View className="mb-5">
           <Text className="mb-2 text-sm font-sansMedium text-text">

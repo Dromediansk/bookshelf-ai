@@ -2,44 +2,19 @@ import { useBooksStore } from "@/store/booksStore";
 import { useNotesStore } from "@/store/notesStore";
 import { Book } from "@/types/book";
 import { toTime } from "@/utils/helpers";
-import { FC, useEffect, useMemo, useState } from "react";
-import {
-  Pressable,
-  ScrollView,
-  Text,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import { router } from "expo-router";
+import { FC } from "react";
+import { Pressable, ScrollView, Text, View } from "react-native";
 import BookNote from "./BookNote";
-import { Note, NoteMode } from "@/types/note";
-import NoteForm from "./NoteForm";
 
 type NotesSectionProps = {
   book: Book;
-  noteMode: NoteMode;
-  setNoteMode: (mode: NoteMode) => void;
 };
 
-export const NotesSection: FC<NotesSectionProps> = ({
-  book,
-  noteMode,
-  setNoteMode,
-}) => {
+export const NotesSection: FC<NotesSectionProps> = ({ book }) => {
   const { id, noteIds } = book;
-  const { height: windowHeight } = useWindowDimensions();
   const { hasHydrated } = useBooksStore();
-  const { addNote, updateNote, getNotesByIds } = useNotesStore();
-
-  const [editingNoteId, setEditingNoteId] = useState<string | undefined>();
-  const [draftContent, setDraftContent] = useState("");
-  const [draftTags, setDraftTags] = useState("");
-
-  function resetDraft() {
-    setNoteMode("none");
-    setEditingNoteId(undefined);
-    setDraftContent("");
-    setDraftTags("");
-  }
+  const { getNotesByIds } = useNotesStore();
 
   const notes = noteIds.length ? getNotesByIds(noteIds) : [];
 
@@ -50,110 +25,44 @@ export const NotesSection: FC<NotesSectionProps> = ({
   const notesCountLabel =
     sortedNotes.length === 1 ? "1 note" : `${sortedNotes.length} notes`;
 
-  const canSaveNote = useMemo(
-    () => hasHydrated && draftContent.trim().length > 0,
-    [draftContent, hasHydrated]
-  );
-
-  const notesListMaxHeight = useMemo(() => {
-    const computed = Math.round(windowHeight * 0.45);
-    return Math.max(220, Math.min(computed, 420));
-  }, [windowHeight]);
-
-  useEffect(() => {
-    if (!hasHydrated) return;
-    if (noteMode !== "add") return;
-
-    setEditingNoteId(undefined);
-    setDraftContent("");
-    setDraftTags("");
-  }, [hasHydrated, noteMode]);
-
   function startAddNote() {
     if (!hasHydrated) return;
-    setNoteMode("add");
-    setEditingNoteId(undefined);
-    setDraftContent("");
-    setDraftTags("");
-  }
-
-  function startEditNote(note: Note) {
-    if (!hasHydrated) return;
-    setNoteMode("edit");
-    setEditingNoteId(note.id);
-    setDraftContent(note.content ?? "");
-    setDraftTags(note.tags?.join(", ") ?? "");
-  }
-
-  function submitNote() {
-    if (!hasHydrated) return;
-    if (!canSaveNote) return;
-
-    if (noteMode === "add") {
-      addNote(id, { content: draftContent, tags: draftTags });
-      resetDraft();
-      return;
-    }
-
-    if (noteMode === "edit" && editingNoteId) {
-      updateNote(id, editingNoteId, {
-        content: draftContent,
-        tags: draftTags,
-      });
-      resetDraft();
-    }
-  }
-
-  if (noteMode === "add" || noteMode === "edit") {
-    return (
-      <NoteForm
-        noteMode={noteMode}
-        draftContent={draftContent}
-        setDraftContent={setDraftContent}
-        draftTags={draftTags}
-        setDraftTags={setDraftTags}
-        canSaveNote={canSaveNote}
-        submitNote={submitNote}
-        resetDraft={resetDraft}
-      />
-    );
+    router.push({ pathname: "/books/[id]/notes/new", params: { id } });
   }
 
   return (
-    <View className="mt-6 rounded-card border border-border bg-surface px-card py-card">
-      {noteMode === "none" ? (
-        <View className="flex-row items-center justify-between gap-3">
-          <Text className="text-sm font-sansMedium text-brand">Notes</Text>
+    <View className="mt-6 flex-1 rounded-card border border-border bg-surface px-card py-card">
+      <View className="flex-row items-center justify-between gap-3">
+        <Text className="text-sm font-sansMedium text-brand">Notes</Text>
 
-          <View className="flex-row items-center gap-3">
-            <Text className="text-xs font-sans text-text-subtle">
-              {notesCountLabel}
-            </Text>
+        <View className="flex-row items-center gap-3">
+          <Text className="text-xs font-sans text-text-subtle">
+            {notesCountLabel}
+          </Text>
 
-            <Pressable
-              onPress={startAddNote}
-              disabled={!hasHydrated}
+          <Pressable
+            onPress={startAddNote}
+            disabled={!hasHydrated}
+            className={
+              hasHydrated
+                ? "rounded-full bg-brand px-card py-2"
+                : "rounded-full bg-surface-muted px-card py-2"
+            }
+            accessibilityRole="button"
+            accessibilityLabel="Add note"
+          >
+            <Text
               className={
                 hasHydrated
-                  ? "rounded-full bg-brand px-card py-2"
-                  : "rounded-full bg-surface-muted px-card py-2"
+                  ? "text-xs font-sansSemibold text-text-inverse"
+                  : "text-xs font-sansSemibold text-text-subtle"
               }
-              accessibilityRole="button"
-              accessibilityLabel="Add note"
             >
-              <Text
-                className={
-                  hasHydrated
-                    ? "text-xs font-sansSemibold text-text-inverse"
-                    : "text-xs font-sansSemibold text-text-subtle"
-                }
-              >
-                Add note
-              </Text>
-            </Pressable>
-          </View>
+              Add note
+            </Text>
+          </Pressable>
         </View>
-      ) : null}
+      </View>
 
       {!hasHydrated ? (
         <Text className="mt-2 text-xs font-sans text-text-subtle">
@@ -172,25 +81,14 @@ export const NotesSection: FC<NotesSectionProps> = ({
         </View>
       ) : (
         <ScrollView
-          className="mt-4"
-          style={{ maxHeight: notesListMaxHeight }}
+          className="mt-4 flex-1"
           contentContainerClassName="gap-3"
           contentContainerStyle={{ paddingBottom: 48 }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator
         >
           {sortedNotes.map((note) => {
-            return (
-              <BookNote
-                key={note.id}
-                bookId={id}
-                note={note}
-                onStartEdit={startEditNote}
-                onResetDraft={resetDraft}
-                noteMode={noteMode}
-                editingNoteId={editingNoteId}
-              />
-            );
+            return <BookNote key={note.id} bookId={id} note={note} />;
           })}
         </ScrollView>
       )}

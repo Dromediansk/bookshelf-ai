@@ -44,6 +44,14 @@ export const RootLayout = () => {
             options={{ title: "Book Details" }}
           />
           <Stack.Screen
+            name="books/[id]/notes/new"
+            options={{ presentation: "modal" }}
+          />
+          <Stack.Screen
+            name="books/[id]/notes/[noteId]/edit"
+            options={{ presentation: "modal" }}
+          />
+          <Stack.Screen
             name="books/[id]/edit"
             options={{ title: "Edit Book" }}
           />
