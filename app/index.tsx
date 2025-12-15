@@ -10,7 +10,7 @@ export const HomeScreen = () => {
 
   return (
     <View className="relative flex-1 py-screen">
-      <View className="px-screen">
+      <View className="px-2">
         <Text className="text-lg font-sans">
           {hasHydrated
             ? `${books.length} book${books.length === 1 ? "" : "s"}`
@@ -19,7 +19,7 @@ export const HomeScreen = () => {
       </View>
 
       {!hasHydrated ? (
-        <View className="flex-1 items-center justify-center px-screen">
+        <View className="flex-1 items-center justify-center px-2">
           <Text className="text-sm font-sans text-text-muted">
             Preparing your offline library…
           </Text>
@@ -28,7 +28,7 @@ export const HomeScreen = () => {
         <FlatList
           data={books}
           keyExtractor={(item) => item.id}
-          contentContainerClassName="px-screen pb-24"
+          contentContainerClassName="px-2 pb-24"
           ItemSeparatorComponent={() => <View className="h-3" />}
           renderItem={({ item }) => <BookCard book={item} />}
           ListEmptyComponent={() => (

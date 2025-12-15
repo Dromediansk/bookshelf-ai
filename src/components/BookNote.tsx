@@ -2,6 +2,7 @@ import { useBooksStore } from "@/store/booksStore";
 import { useNotesStore } from "@/store/notesStore";
 import { Note } from "@/types/note";
 import { toTime } from "@/utils/helpers";
+import { Ionicons } from "@expo/vector-icons";
 import { FC } from "react";
 import { Pressable, Text, View } from "react-native";
 
@@ -39,86 +40,61 @@ const BookNote: FC<BookNoteProps> = ({
   const dateLabel = formatNoteDate(note.createdAt);
 
   return (
-    <View
+    <Pressable
       key={note.id}
+      onPress={() => onStartEdit(note)}
+      disabled={!hasHydrated}
       className="rounded-card border border-border bg-surface-muted px-card py-card"
+      accessibilityRole="button"
+      accessibilityLabel="Edit note"
     >
-      <View className="flex-row items-start justify-between gap-3">
-        <Text className="flex-1 text-sm font-sans text-text">
-          {note.content}
-        </Text>
-        {dateLabel ? (
-          <Text className="text-xs font-sans text-text-subtle">
-            {dateLabel}
+      <View className={hasHydrated ? undefined : "opacity-60"}>
+        <View className="flex-row items-start justify-between gap-3">
+          <Text className="flex-1 text-sm font-sans text-text">
+            {note.content}
           </Text>
-        ) : null}
-      </View>
-
-      {note.tags?.length ? (
-        <View className="mt-3 flex-row flex-wrap gap-2">
-          {note.tags.map((tag) => (
-            <View
-              key={`${note.id}:${tag}`}
-              className="rounded-full border border-border bg-surface px-2 py-1"
-            >
-              <Text className="text-xs font-sansMedium text-text">{tag}</Text>
-            </View>
-          ))}
+          {dateLabel ? (
+            <Text className="text-xs font-sans text-text-subtle">
+              {dateLabel}
+            </Text>
+          ) : null}
         </View>
-      ) : null}
 
-      <View className="mt-4 flex-row justify-end gap-3">
-        <Pressable
-          onPress={() => onStartEdit(note)}
-          disabled={!hasHydrated}
-          className={
-            hasHydrated
-              ? "rounded-control border border-border bg-surface px-card py-2"
-              : "rounded-control border border-border bg-surface-muted px-card py-2"
-          }
-          accessibilityRole="button"
-          accessibilityLabel="Edit note"
-        >
-          <Text
+        <View className="mt-3 flex-row items-start justify-between gap-3">
+          <View className="flex-1 flex-row flex-wrap gap-2">
+            {note.tags?.map((tag) => (
+              <View
+                key={`${note.id}:${tag}`}
+                className="rounded-full border border-border bg-surface px-2 py-1"
+              >
+                <Text className="text-xs font-sansMedium text-text">{tag}</Text>
+              </View>
+            ))}
+          </View>
+
+          <Pressable
+            onPress={(event) => {
+              event.stopPropagation?.();
+              if (!hasHydrated) return;
+              if (noteMode === "edit" && editingNoteId === note.id) {
+                onResetDraft();
+              }
+              deleteNote(bookId, note.id);
+            }}
+            disabled={!hasHydrated}
             className={
               hasHydrated
-                ? "text-xs font-sansSemibold text-text"
-                : "text-xs font-sansSemibold text-text-subtle"
+                ? "rounded-control border border-border bg-surface p-2"
+                : "rounded-control border border-border bg-surface-muted p-2"
             }
+            accessibilityRole="button"
+            accessibilityLabel="Delete note"
           >
-            Edit
-          </Text>
-        </Pressable>
-
-        <Pressable
-          onPress={() => {
-            if (!hasHydrated) return;
-            if (noteMode === "edit" && editingNoteId === note.id) {
-              onResetDraft();
-            }
-            deleteNote(bookId, note.id);
-          }}
-          disabled={!hasHydrated}
-          className={
-            hasHydrated
-              ? "rounded-control border border-border bg-surface px-card py-2"
-              : "rounded-control border border-border bg-surface-muted px-card py-2"
-          }
-          accessibilityRole="button"
-          accessibilityLabel="Delete note"
-        >
-          <Text
-            className={
-              hasHydrated
-                ? "text-xs font-sansSemibold text-text"
-                : "text-xs font-sansSemibold text-text-subtle"
-            }
-          >
-            Delete
-          </Text>
-        </Pressable>
+            <Ionicons name="trash-outline" size={18} />
+          </Pressable>
+        </View>
       </View>
-    </View>
+    </Pressable>
   );
 };
 

@@ -25,19 +25,19 @@ const NoteForm: FC<NoteFormProps> = ({
 }) => {
   return (
     <View className="mt-4 rounded-card border border-border bg-surface-muted px-card py-card">
-      <Text className="text-sm font-sansSemibold text-text">
+      <Text className="text-sm font-sansSemibold text-brand">
         {noteMode === "add" ? "New note" : "Edit note"}
       </Text>
 
       <View className="mt-4">
-        <Text className="mb-2 text-sm font-sansMedium text-text">Note</Text>
         <TextInput
           value={draftContent}
           onChangeText={setDraftContent}
-          placeholder="Write your note…"
-          className="rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text"
+          placeholder="Write an idea you want to remember…"
+          className="rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text h-32"
           multiline
           textAlignVertical="top"
+          autoFocus
         />
       </View>
 
@@ -48,7 +48,7 @@ const NoteForm: FC<NoteFormProps> = ({
         <TextInput
           value={draftTags}
           onChangeText={setDraftTags}
-          placeholder="e.g. characters, quotes"
+          placeholder="e.g. inspiring, focus, habits"
           className="rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text"
           autoCapitalize="none"
         />

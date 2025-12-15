@@ -2,7 +2,7 @@ import { useBooksStore } from "@/store/booksStore";
 import { useNotesStore } from "@/store/notesStore";
 import { Book } from "@/types/book";
 import { toTime } from "@/utils/helpers";
-import { FC, useMemo, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import {
   Pressable,
   ScrollView,
@@ -16,15 +16,20 @@ import NoteForm from "./NoteForm";
 
 type NotesSectionProps = {
   book: Book;
+  noteMode: NoteMode;
+  setNoteMode: (mode: NoteMode) => void;
 };
 
-export const NotesSection: FC<NotesSectionProps> = ({ book }) => {
+export const NotesSection: FC<NotesSectionProps> = ({
+  book,
+  noteMode,
+  setNoteMode,
+}) => {
   const { id, noteIds } = book;
   const { height: windowHeight } = useWindowDimensions();
   const { hasHydrated } = useBooksStore();
   const { addNote, updateNote, getNotesByIds } = useNotesStore();
 
-  const [noteMode, setNoteMode] = useState<NoteMode>("none");
   const [editingNoteId, setEditingNoteId] = useState<string | undefined>();
   const [draftContent, setDraftContent] = useState("");
   const [draftTags, setDraftTags] = useState("");
@@ -36,13 +41,10 @@ export const NotesSection: FC<NotesSectionProps> = ({ book }) => {
     setDraftTags("");
   }
 
-  const notes = useMemo(() => {
-    if (!noteIds.length) return [];
-    return getNotesByIds(noteIds);
-  }, [getNotesByIds, noteIds]);
+  const notes = noteIds.length ? getNotesByIds(noteIds) : [];
 
   const sortedNotes = [...notes].sort(
-    (a, b) => toTime(b.createdAt) - toTime(a.createdAt),
+    (a, b) => toTime(b.createdAt) - toTime(a.createdAt)
   );
 
   const notesCountLabel =
@@ -50,13 +52,22 @@ export const NotesSection: FC<NotesSectionProps> = ({ book }) => {
 
   const canSaveNote = useMemo(
     () => hasHydrated && draftContent.trim().length > 0,
-    [draftContent, hasHydrated],
+    [draftContent, hasHydrated]
   );
 
   const notesListMaxHeight = useMemo(() => {
     const computed = Math.round(windowHeight * 0.45);
     return Math.max(220, Math.min(computed, 420));
   }, [windowHeight]);
+
+  useEffect(() => {
+    if (!hasHydrated) return;
+    if (noteMode !== "add") return;
+
+    setEditingNoteId(undefined);
+    setDraftContent("");
+    setDraftTags("");
+  }, [hasHydrated, noteMode]);
 
   function startAddNote() {
     if (!hasHydrated) return;
@@ -93,57 +104,61 @@ export const NotesSection: FC<NotesSectionProps> = ({ book }) => {
     }
   }
 
+  if (noteMode === "add" || noteMode === "edit") {
+    return (
+      <NoteForm
+        noteMode={noteMode}
+        draftContent={draftContent}
+        setDraftContent={setDraftContent}
+        draftTags={draftTags}
+        setDraftTags={setDraftTags}
+        canSaveNote={canSaveNote}
+        submitNote={submitNote}
+        resetDraft={resetDraft}
+      />
+    );
+  }
+
   return (
     <View className="mt-6 rounded-card border border-border bg-surface px-card py-card">
-      <View className="flex-row items-center justify-between gap-3">
-        <Text className="text-sm font-sansMedium text-brand">Notes</Text>
+      {noteMode === "none" ? (
+        <View className="flex-row items-center justify-between gap-3">
+          <Text className="text-sm font-sansMedium text-brand">Notes</Text>
 
-        <View className="flex-row items-center gap-3">
-          <Text className="text-xs font-sans text-text-subtle">
-            {notesCountLabel}
-          </Text>
+          <View className="flex-row items-center gap-3">
+            <Text className="text-xs font-sans text-text-subtle">
+              {notesCountLabel}
+            </Text>
 
-          <Pressable
-            onPress={startAddNote}
-            disabled={!hasHydrated}
-            className={
-              hasHydrated
-                ? "rounded-full bg-brand px-card py-2"
-                : "rounded-full bg-surface-muted px-card py-2"
-            }
-            accessibilityRole="button"
-            accessibilityLabel="Add note"
-          >
-            <Text
+            <Pressable
+              onPress={startAddNote}
+              disabled={!hasHydrated}
               className={
                 hasHydrated
-                  ? "text-xs font-sansSemibold text-text-inverse"
-                  : "text-xs font-sansSemibold text-text-subtle"
+                  ? "rounded-full bg-brand px-card py-2"
+                  : "rounded-full bg-surface-muted px-card py-2"
               }
+              accessibilityRole="button"
+              accessibilityLabel="Add note"
             >
-              Add note
-            </Text>
-          </Pressable>
+              <Text
+                className={
+                  hasHydrated
+                    ? "text-xs font-sansSemibold text-text-inverse"
+                    : "text-xs font-sansSemibold text-text-subtle"
+                }
+              >
+                Add note
+              </Text>
+            </Pressable>
+          </View>
         </View>
-      </View>
+      ) : null}
 
       {!hasHydrated ? (
         <Text className="mt-2 text-xs font-sans text-text-subtle">
           Loading your library…
         </Text>
-      ) : null}
-
-      {noteMode !== "none" ? (
-        <NoteForm
-          noteMode={noteMode}
-          draftContent={draftContent}
-          setDraftContent={setDraftContent}
-          draftTags={draftTags}
-          setDraftTags={setDraftTags}
-          canSaveNote={canSaveNote}
-          submitNote={submitNote}
-          resetDraft={resetDraft}
-        />
       ) : null}
 
       {sortedNotes.length === 0 ? (
@@ -160,8 +175,8 @@ export const NotesSection: FC<NotesSectionProps> = ({ book }) => {
           className="mt-4"
           style={{ maxHeight: notesListMaxHeight }}
           contentContainerClassName="gap-3"
+          contentContainerStyle={{ paddingBottom: 48 }}
           keyboardShouldPersistTaps="handled"
-          nestedScrollEnabled
           showsVerticalScrollIndicator
         >
           {sortedNotes.map((note) => {
