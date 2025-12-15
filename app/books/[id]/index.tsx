@@ -1,10 +1,12 @@
 import { Pressable, Text, View } from "react-native";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { cssInterop } from "nativewind";
 
 import { StatusBadge } from "@/components/StatusBadge";
 import { useBooksStore } from "@/store/booksStore";
 import { NotesSection } from "@/components/NotesSection";
+import { AboutBookModal } from "@/components/AboutBookModal";
 import { NoteMode } from "@/types/note";
 import { useState } from "react";
 
@@ -12,10 +14,13 @@ type BookDetailScreenParams = {
   id: string;
 };
 
+const TailwindIonicons = cssInterop(Ionicons, { className: "style" });
+
 export const BookDetailScreen = () => {
   const params = useLocalSearchParams<BookDetailScreenParams>();
   const bookId = params.id;
 
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [noteMode, setNoteMode] = useState<NoteMode>("none");
 
   const { getBookById } = useBooksStore();
@@ -72,7 +77,7 @@ export const BookDetailScreen = () => {
       />
 
       <View className="flex-1 px-2">
-        {description && noteMode === "none" && (
+        {noteMode === "none" && (
           <>
             <View className="rounded-card border border-border bg-brand-subtle px-card py-card">
               <View className="flex-row items-start justify-between gap-3">
@@ -89,27 +94,35 @@ export const BookDetailScreen = () => {
                 <StatusBadge status={status} />
               </View>
 
-              <View className="mt-4 flex-row flex-wrap gap-2">
+              <View className="mt-4 flex-row items-center justify-between gap-3">
                 <View className="rounded-full border border-brand bg-surface px-card py-2">
                   <Text className="text-sm font-sansSemibold text-text">
                     {genre === "Unknown" ? "Genre: Not set" : `Genre: ${genre}`}
                   </Text>
                 </View>
-              </View>
-            </View>
 
-            <View className="mt-6 rounded-card border border-border bg-surface px-card py-card">
-              <Text className="text-sm font-sansMedium text-brand">
-                About the book
-              </Text>
-              <View className="mt-3 border-l-4 border-brand pl-3">
-                <Text className="text-sm font-sans text-text-muted">
-                  {description}
-                </Text>
+                <Pressable
+                  onPress={() => setIsAboutOpen(true)}
+                  accessibilityRole="button"
+                  accessibilityLabel="About the book"
+                  hitSlop={10}
+                >
+                  <TailwindIonicons
+                    name="information-circle-outline"
+                    size={22}
+                    className="text-brand"
+                  />
+                </Pressable>
               </View>
             </View>
           </>
         )}
+
+        <AboutBookModal
+          visible={isAboutOpen}
+          onClose={() => setIsAboutOpen(false)}
+          description={description}
+        />
 
         <NotesSection
           book={book}
