@@ -1,11 +1,11 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { v4 as uuidv4 } from "uuid";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 import { useBooksStore } from "@/store/booksStore";
 import type { Note } from "@/types/note";
 import { MOCK_NOTES } from "mocks/notes";
+import { randomUUID } from "expo-crypto";
 
 type NoteInput = {
   content: string;
@@ -73,7 +73,7 @@ export const useNotesStore = create<NotesState>()(
         if (!content) return;
 
         const newNote: Note = {
-          id: uuidv4(),
+          id: randomUUID(),
           bookId,
           content,
           tags: normalizeTags(note.tags),

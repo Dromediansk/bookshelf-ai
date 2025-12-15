@@ -1,9 +1,9 @@
 import { router } from "expo-router";
-import { v4 as uuidv4 } from "uuid";
 
 import { BookForm, BookFormValues } from "@/components/BookForm";
 import { useBooksStore } from "@/store/booksStore";
 import type { Book } from "@/types/book";
+import { randomUUID } from "expo-crypto";
 
 export const AddBookScreen = () => {
   const { addBook } = useBooksStore();
@@ -12,7 +12,7 @@ export const AddBookScreen = () => {
     const nowIso = new Date().toISOString();
 
     const book: Book = {
-      id: uuidv4(),
+      id: randomUUID(),
       title: values.title,
       author: values.author || "Unknown",
       genre: values.genre,
