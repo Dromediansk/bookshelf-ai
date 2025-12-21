@@ -52,7 +52,7 @@ export const BookDetailScreen = () => {
   const { id, title, author, genre, status, description } = book;
 
   return (
-    <View className="flex-1 bg-surface-muted py-2">
+    <View className="flex-1 bg-surface-muted ">
       <Stack.Screen
         options={{
           title,
@@ -74,14 +74,13 @@ export const BookDetailScreen = () => {
         }}
       />
 
-      <View className="flex-1 px-2">
-        <View className="rounded-card border border-border bg-brand-subtle px-card py-card">
+      <View className="flex-1">
+        <View className="border border-border bg-brand-subtle px-card py-card">
           <View className="flex-row items-start justify-between gap-3">
             <View className="flex-1">
-              <Text className="text-2xl font-sansBold text-text">{title}</Text>
               {!!author?.trim() && (
-                <Text className="mt-2 text-sm font-sans text-text-muted">
-                  {author}
+                <Text className="mt-2 text-lg font-sans text-text-muted">
+                  Book by {author}
                 </Text>
               )}
             </View>
@@ -104,7 +103,7 @@ export const BookDetailScreen = () => {
               <TailwindIonicons
                 name="information-circle-outline"
                 size={22}
-                className="text-brand"
+                className="text-text-subtle"
               />
             </Pressable>
           </View>

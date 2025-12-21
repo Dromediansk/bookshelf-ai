@@ -9,6 +9,7 @@ import {
   Montserrat_600SemiBold,
   Montserrat_700Bold,
 } from "@expo-google-fonts/montserrat";
+import colors from "@/utils/colors";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -34,6 +35,9 @@ export const RootLayout = () => {
           screenOptions={{
             headerTitleStyle: {
               fontFamily: "Montserrat_600SemiBold",
+            },
+            headerStyle: {
+              backgroundColor: colors.brand.subtle,
             },
           }}
         >

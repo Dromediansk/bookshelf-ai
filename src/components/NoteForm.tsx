@@ -24,7 +24,7 @@ const NoteForm: FC<NoteFormProps> = ({
   resetDraft,
 }) => {
   return (
-    <View className="mt-4 rounded-card border border-border bg-surface-muted px-card py-card">
+    <View className="border border-border bg-surface-muted px-card py-card">
       <Text className="text-sm font-sansSemibold text-brand">
         {noteMode === "add" ? "New note" : "Edit note"}
       </Text>

@@ -124,9 +124,9 @@ const EditNoteModal = () => {
   }
 
   return (
-    <View className="flex-1 bg-surface-muted py-2">
+    <View className="flex-1 bg-surface-muted">
       <Stack.Screen options={{ title: book.title }} />
-      <View className="flex-1 px-2">
+      <View className="flex-1">
         <NoteForm
           noteMode="edit"
           draftContent={draftContent}

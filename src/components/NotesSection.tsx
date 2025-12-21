@@ -31,7 +31,7 @@ export const NotesSection: FC<NotesSectionProps> = ({ book }) => {
   }
 
   return (
-    <View className="mt-6 flex-1 rounded-card border border-border bg-surface px-card py-card">
+    <View className="flex-1 border border-border bg-surface px-card py-card">
       <View className="flex-row items-center justify-between gap-3">
         <Text className="text-sm font-sansMedium text-brand">Notes</Text>
 

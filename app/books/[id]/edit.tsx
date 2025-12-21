@@ -74,7 +74,10 @@ export const EditBookScreen = () => {
               accessibilityLabel="Delete book"
               hitSlop={10}
             >
-              <Ionicons name="trash-outline" size={22} />
+              <Ionicons
+                name="trash-outline"
+                size={22}
+              />
             </Pressable>
           ),
         }}
