@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
 
-import { BOOK_GENRES, type BookGenre, type BookStatus } from "@/types/book";
+import { type BookGenre, type BookStatus } from "@/types/book";
+import FormGenresSection from "./FormGenresSection";
 
 export type BookFormValues = {
   title: string;
@@ -22,11 +23,6 @@ const STATUSES: { value: BookStatus; label: string }[] = [
   { value: "reading", label: "Reading" },
   { value: "read", label: "Read" },
 ];
-
-const GENRES: { value: BookGenre; label: string }[] = BOOK_GENRES.map((g) => ({
-  value: g,
-  label: g === "Unknown" ? "Not set" : g,
-}));
 
 export const BookForm = ({
   submitLabel = "Save",
@@ -69,7 +65,7 @@ export const BookForm = ({
   }
 
   return (
-    <View className="flex-1 justify-between px-2 py-2">
+    <View className="flex-1 justify-between px-6 py-6">
       <View>
         <View className="mb-5">
           <Text className="mb-2 text-sm font-sansMedium text-text">
@@ -102,34 +98,7 @@ export const BookForm = ({
           <Text className="mb-2 text-sm font-sansMedium text-text">
             Genre (optional)
           </Text>
-          <View className="flex-row flex-wrap gap-2">
-            {GENRES.map((g) => {
-              const selected = g.value === genre;
-              return (
-                <Pressable
-                  key={g.value}
-                  onPress={() => setGenre(g.value)}
-                  className={
-                    selected
-                      ? "rounded-full bg-brand px-card py-2"
-                      : "rounded-full border border-border bg-surface px-card py-2"
-                  }
-                  accessibilityRole="button"
-                  accessibilityLabel={`Set genre to ${g.label}`}
-                >
-                  <Text
-                    className={
-                      selected
-                        ? "text-sm font-sansSemibold text-text-inverse"
-                        : "text-sm font-sansSemibold text-text"
-                    }
-                  >
-                    {g.label}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
+          <FormGenresSection genre={genre} setGenre={setGenre} />
         </View>
 
         <View className="mb-6">
