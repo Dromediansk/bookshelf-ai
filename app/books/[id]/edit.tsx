@@ -1,12 +1,6 @@
 import { Text, View, Pressable } from "react-native";
-import {
-  router,
-  Stack,
-  useLocalSearchParams,
-  useNavigation,
-} from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { CommonActions } from "@react-navigation/native";
 
 import { BookForm } from "@/components/BookForm";
 import { useBooksStore } from "@/store/booksStore";
@@ -19,8 +13,6 @@ export const EditBookScreen = () => {
   const params = useLocalSearchParams<EditBookScreenParams>();
   const bookId = params.id;
 
-  const navigation = useNavigation();
-
   const { getBookById, updateBook, removeBook } = useBooksStore();
   const book = getBookById(bookId);
 
@@ -29,12 +21,7 @@ export const EditBookScreen = () => {
     removeBook(book.id);
 
     // Ensure we can't navigate back to the deleted book screens.
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{ name: "index" }],
-      })
-    );
+    router.replace("/");
   }
 
   if (!bookId || !book) {
@@ -74,10 +61,7 @@ export const EditBookScreen = () => {
               accessibilityLabel="Delete book"
               hitSlop={10}
             >
-              <Ionicons
-                name="trash-outline"
-                size={22}
-              />
+              <Ionicons name="trash-outline" size={22} />
             </Pressable>
           ),
         }}

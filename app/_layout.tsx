@@ -30,7 +30,7 @@ export const RootLayout = () => {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView className="flex-1 bg-surface" edges={["bottom"]}>
+      <SafeAreaView className="flex-1 bg-surface" edges={[]}>
         <Stack
           screenOptions={{
             headerTitleStyle: {
@@ -41,11 +41,14 @@ export const RootLayout = () => {
             },
           }}
         >
-          <Stack.Screen name="index" options={{ title: "Your Library" }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="add-book" options={{ title: "Add Book" }} />
           <Stack.Screen
             name="books/[id]/index"
-            options={{ title: "Book Details" }}
+            options={{
+              title: "Book Details",
+              headerBackTitle: "Library",
+            }}
           />
           <Stack.Screen
             name="books/[id]/notes/new"

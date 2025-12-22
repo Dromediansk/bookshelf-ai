@@ -20,6 +20,7 @@ export type Book = {
   genre: BookGenre;
   status: BookStatus;
   createdAt: string;
+  updatedAt: string;
   description?: string;
   cover?: string;
   noteIds: string[];

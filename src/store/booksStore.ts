@@ -35,7 +35,9 @@ export const useBooksStore = create<BooksState>()(
       updateBook: (id, updates) =>
         set((state) => ({
           books: state.books.map((book) =>
-            book.id === id ? { ...book, ...updates } : book,
+            book.id === id
+              ? { ...book, ...updates, updatedAt: new Date().toISOString() }
+              : book
           ),
         })),
 
@@ -46,7 +48,7 @@ export const useBooksStore = create<BooksState>()(
           require("@/store/notesStore") as typeof import("@/store/notesStore");
         const notesState = useNotesStore.getState();
         notesState.setNotes(
-          notesState.notes.filter((note) => note.bookId !== id),
+          notesState.notes.filter((note) => note.bookId !== id)
         );
 
         set((state) => ({
@@ -63,8 +65,21 @@ export const useBooksStore = create<BooksState>()(
       storage: createJSONStorage(() => AsyncStorage),
       partialize: (state) => ({ books: state.books }),
       onRehydrateStorage: () => (state, error) => {
-        state?.setHasHydrated(true);
+        if (!state) return;
+
+        const nowIso = new Date().toISOString();
+        const migrated = state.books.map((book) => ({
+          ...book,
+          updatedAt:
+            typeof (book as unknown as { updatedAt?: string }).updatedAt ===
+            "string"
+              ? (book as unknown as { updatedAt?: string }).updatedAt!
+              : book.createdAt || nowIso,
+        }));
+
+        state.setBooks(migrated);
+        state.setHasHydrated(true);
       },
-    },
-  ),
+    }
+  )
 );

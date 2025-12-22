@@ -18,6 +18,7 @@ export const AddBookScreen = () => {
       genre: values.genre,
       status: values.status,
       createdAt: nowIso,
+      updatedAt: nowIso,
       noteIds: [],
     };
 

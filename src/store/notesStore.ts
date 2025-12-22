@@ -72,12 +72,14 @@ export const useNotesStore = create<NotesState>()(
         const content = note.content.trim();
         if (!content) return;
 
+        const nowIso = new Date().toISOString();
+
         const newNote: Note = {
           id: randomUUID(),
           bookId,
           content,
           tags: normalizeTags(note.tags),
-          createdAt: new Date().toISOString(),
+          createdAt: nowIso,
         };
 
         set((state) => ({
@@ -90,7 +92,11 @@ export const useNotesStore = create<NotesState>()(
             if (book.id !== bookId) return book;
             const existing = Array.isArray(book.noteIds) ? book.noteIds : [];
             if (existing.includes(newNote.id)) return book;
-            return { ...book, noteIds: [...existing, newNote.id] };
+            return {
+              ...book,
+              noteIds: [...existing, newNote.id],
+              updatedAt: nowIso,
+            };
           }),
         }));
       },
@@ -122,6 +128,8 @@ export const useNotesStore = create<NotesState>()(
       },
 
       deleteNote: (bookId, noteId) => {
+        const nowIso = new Date().toISOString();
+
         // 1) Remove the note content from the global notes list.
         set((state) => ({
           notes: state.notes.filter((note) => note.id !== noteId),
@@ -133,7 +141,11 @@ export const useNotesStore = create<NotesState>()(
             if (book.id !== bookId) return book;
             const existing = Array.isArray(book.noteIds) ? book.noteIds : [];
             if (!existing.includes(noteId)) return book;
-            return { ...book, noteIds: existing.filter((id) => id !== noteId) };
+            return {
+              ...book,
+              noteIds: existing.filter((id) => id !== noteId),
+              updatedAt: nowIso,
+            };
           }),
         }));
       },
