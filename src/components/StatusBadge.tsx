@@ -24,8 +24,8 @@ const STATUS_META: Record<
     containerClassName: "border border-info-border bg-info-bg",
     textClassName: "text-info-text",
   },
-  read: {
-    label: "Read",
+  finished: {
+    label: "Finished",
     containerClassName: "border border-success-border bg-success-bg",
     textClassName: "text-success-text",
   },

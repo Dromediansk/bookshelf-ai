@@ -1,4 +1,5 @@
-import { BOOK_GENRES, BookGenre } from "@/types/book";
+import { BookGenre } from "@/types/book";
+import { BOOK_GENRES } from "@/utils/contants";
 import { useMemo, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 

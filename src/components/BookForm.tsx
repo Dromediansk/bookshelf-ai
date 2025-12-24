@@ -21,7 +21,7 @@ type BookFormProps = {
 const STATUSES: { value: BookStatus; label: string }[] = [
   { value: "to-read", label: "To Read" },
   { value: "reading", label: "Reading" },
-  { value: "read", label: "Read" },
+  { value: "finished", label: "Finished" },
 ];
 
 export const BookForm = ({

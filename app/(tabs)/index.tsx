@@ -1,12 +1,31 @@
-import { FlatList, Pressable, Text, View } from "react-native";
+import { Pressable, SectionList, Text, View } from "react-native";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 import { BookCard } from "@/components/BookCard";
 import { useBooksStore } from "@/store/booksStore";
+import { sortBooksForList } from "@/utils/helpers";
+import type { Book, BookStatus } from "@/types/book";
+import BookSectionHeader from "@/components/BookSectionHeader";
+
+type BookSection = {
+  status: BookStatus;
+  data: Book[];
+};
 
 export const LibraryScreen = () => {
   const { books, hasHydrated } = useBooksStore();
+  const sortedBooks = sortBooksForList(books);
+
+  const sections: BookSection[] = (() => {
+    const orderedStatuses: BookStatus[] = ["reading", "to-read", "finished"];
+    return orderedStatuses
+      .map((status) => ({
+        status,
+        data: sortedBooks.filter((b) => b.status === status),
+      }))
+      .filter((section) => section.data.length > 0);
+  })();
 
   return (
     <View className="relative flex-1 py-screen">
@@ -25,11 +44,15 @@ export const LibraryScreen = () => {
           </Text>
         </View>
       ) : (
-        <FlatList
-          data={books}
+        <SectionList<Book, BookSection>
+          sections={sections}
           keyExtractor={(item) => item.id}
           contentContainerClassName="px-2 pb-24"
-          ItemSeparatorComponent={() => <View className="h-3" />}
+          stickySectionHeadersEnabled
+          ItemSeparatorComponent={() => <View className="h-2" />}
+          renderSectionHeader={({ section }) => (
+            <BookSectionHeader section={section} />
+          )}
           renderItem={({ item }) => <BookCard book={item} />}
           ListEmptyComponent={() => (
             <View className="mt-10 items-center">

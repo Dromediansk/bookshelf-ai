@@ -1,14 +1,21 @@
 import { Pressable, Text, View } from "react-native";
 import { router } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import { cssInterop } from "nativewind";
 
 import type { Book } from "@/types/book";
-import { StatusBadge } from "@/components/StatusBadge";
+import { formatCreatedAt } from "@/utils/helpers";
+
+const TailwindIonicons = cssInterop(Ionicons, { className: "style" });
 
 type BookCardProps = {
   book: Book;
 };
 
 export const BookCard = ({ book }: BookCardProps) => {
+  const createdAtLabel = formatCreatedAt(book.createdAt);
+  const notesCount = book.noteIds?.length ?? 0;
+
   return (
     <Pressable
       onPress={() =>
@@ -40,7 +47,26 @@ export const BookCard = ({ book }: BookCardProps) => {
           </Text>
         </View>
 
-        <StatusBadge status={book.status} />
+        <View className="items-end">
+          {!!createdAtLabel && (
+            <Text className="text-xs font-sans text-text-subtle">
+              {createdAtLabel}
+            </Text>
+          )}
+
+          <View className="mt-1 flex-row items-center gap-1">
+            <TailwindIonicons
+              name="document-text-outline"
+              size={14}
+              className="text-text-subtle"
+              accessibilityElementsHidden
+              importantForAccessibility="no"
+            />
+            <Text className="text-xs font-sans text-text-muted">
+              {notesCount}
+            </Text>
+          </View>
+        </View>
       </View>
     </Pressable>
   );
