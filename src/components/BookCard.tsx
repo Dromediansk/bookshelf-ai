@@ -4,7 +4,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { cssInterop } from "nativewind";
 
 import type { Book } from "@/types/book";
-import { formatCreatedAt } from "@/utils/helpers";
 
 const TailwindIonicons = cssInterop(Ionicons, { className: "style" });
 
@@ -13,7 +12,6 @@ type BookCardProps = {
 };
 
 export const BookCard = ({ book }: BookCardProps) => {
-  const createdAtLabel = formatCreatedAt(book.createdAt);
   const notesCount = book.noteIds?.length ?? 0;
 
   return (
@@ -34,27 +32,22 @@ export const BookCard = ({ book }: BookCardProps) => {
             {book.title}
           </Text>
           <Text
-            className="mt-1 text-sm font-sans text-text-muted"
+            className="mt-2 text-sm font-sans text-text-muted"
             numberOfLines={1}
           >
             {book.author}
           </Text>
+        </View>
+
+        <View className="items-end justify-center">
           <Text
-            className="mt-1 text-xs font-sans text-text-subtle"
+            className="text-md font-sans text-text-subtle"
             numberOfLines={1}
           >
             {book.genre}
           </Text>
-        </View>
 
-        <View className="items-end">
-          {!!createdAtLabel && (
-            <Text className="text-xs font-sans text-text-subtle">
-              {createdAtLabel}
-            </Text>
-          )}
-
-          <View className="mt-1 flex-row items-center gap-1">
+          <View className="mt-2 flex-row items-center gap-1">
             <TailwindIonicons
               name="document-text-outline"
               size={14}
@@ -62,7 +55,7 @@ export const BookCard = ({ book }: BookCardProps) => {
               accessibilityElementsHidden
               importantForAccessibility="no"
             />
-            <Text className="text-xs font-sans text-text-muted">
+            <Text className="text-sm font-sans text-text-muted">
               {notesCount}
             </Text>
           </View>

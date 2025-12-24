@@ -8,6 +8,7 @@ import { useBooksStore } from "@/store/booksStore";
 import { NotesSection } from "@/components/NotesSection";
 import { AboutBookModal } from "@/components/AboutBookModal";
 import { useState } from "react";
+import { formatCreatedAt } from "@/utils/helpers";
 
 type BookDetailScreenParams = {
   id: string;
@@ -49,7 +50,9 @@ export const BookDetailScreen = () => {
     );
   }
 
-  const { id, title, author, genre, status, description } = book;
+  const { id, title, author, genre, status, description, createdAt } = book;
+
+  const createdAtLabel = formatCreatedAt(createdAt);
 
   return (
     <View className="flex-1 bg-surface-muted ">
@@ -84,28 +87,37 @@ export const BookDetailScreen = () => {
                 </Text>
               )}
             </View>
-            <StatusBadge status={status} />
+
+            <View className="flex-row items-center gap-4 mt-2">
+              <StatusBadge status={status} />
+
+              <Pressable
+                onPress={() => setIsAboutOpen(true)}
+                accessibilityRole="button"
+                accessibilityLabel="About the book"
+                hitSlop={10}
+              >
+                <TailwindIonicons
+                  name="information-circle-outline"
+                  size={22}
+                  className="text-text-subtle"
+                />
+              </Pressable>
+            </View>
           </View>
 
-          <View className="mt-4 flex-row items-center justify-between gap-3">
-            <View className="rounded-full border border-brand bg-surface px-card py-2">
-              <Text className="text-sm font-sansSemibold text-text">
+          <View className="mt-2 flex-row items-center justify-between gap-3">
+            <View className="rounded-full border border-brand bg-surface px-card">
+              <Text className="text-sm font-sansSemibold text-text py-2">
                 {genre === "Unknown" ? "Genre: Not set" : `Genre: ${genre}`}
               </Text>
             </View>
 
-            <Pressable
-              onPress={() => setIsAboutOpen(true)}
-              accessibilityRole="button"
-              accessibilityLabel="About the book"
-              hitSlop={10}
-            >
-              <TailwindIonicons
-                name="information-circle-outline"
-                size={22}
-                className="text-text-subtle"
-              />
-            </Pressable>
+            <View className="items-end">
+              <Text className="text-sm font-sans text-text-muted">
+                Created: {createdAtLabel}
+              </Text>
+            </View>
           </View>
         </View>
 
