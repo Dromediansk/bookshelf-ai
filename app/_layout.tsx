@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { StatusBar } from "expo-status-bar";
 import {
   useFonts,
   Montserrat_400Regular,
@@ -31,6 +32,7 @@ export const RootLayout = () => {
   return (
     <SafeAreaProvider>
       <SafeAreaView className="flex-1 bg-surface" edges={[]}>
+        <StatusBar style="dark" />
         <Stack
           screenOptions={{
             headerTitleStyle: {

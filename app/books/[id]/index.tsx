@@ -22,6 +22,8 @@ export const BookDetailScreen = () => {
 
   const [isAboutOpen, setIsAboutOpen] = useState(false);
 
+  const openAbout = () => setIsAboutOpen(true);
+
   const { getBookById } = useBooksStore();
   const book = getBookById(bookId);
 
@@ -58,7 +60,23 @@ export const BookDetailScreen = () => {
     <View className="flex-1 bg-surface-muted ">
       <Stack.Screen
         options={{
-          title,
+          headerTitle: () => (
+            <Pressable
+              onPress={openAbout}
+              accessibilityRole="button"
+              accessibilityLabel="Open about book"
+              hitSlop={10}
+              style={{ flexShrink: 1 }}
+            >
+              <Text
+                numberOfLines={1}
+                className="text-xl font-sansSemibold text-text"
+                style={{ flexShrink: 1 }}
+              >
+                {title}
+              </Text>
+            </Pressable>
+          ),
           headerRight: () => (
             <Pressable
               onPress={() =>
@@ -92,7 +110,7 @@ export const BookDetailScreen = () => {
               <StatusBadge status={status} />
 
               <Pressable
-                onPress={() => setIsAboutOpen(true)}
+                onPress={openAbout}
                 accessibilityRole="button"
                 accessibilityLabel="About the book"
                 hitSlop={10}
@@ -124,6 +142,8 @@ export const BookDetailScreen = () => {
         <AboutBookModal
           visible={isAboutOpen}
           onClose={() => setIsAboutOpen(false)}
+          title={title}
+          author={author}
           description={description}
         />
 

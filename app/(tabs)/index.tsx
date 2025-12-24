@@ -7,6 +7,7 @@ import { useBooksStore } from "@/store/booksStore";
 import { sortBooksForList } from "@/utils/helpers";
 import type { Book, BookStatus } from "@/types/book";
 import BookSectionHeader from "@/components/BookSectionHeader";
+import themeColors from "@/utils/colors";
 
 type BookSection = {
   status: BookStatus;
@@ -28,7 +29,7 @@ export const LibraryScreen = () => {
   })();
 
   return (
-    <View className="relative flex-1 py-screen">
+    <View className="relative flex-1 pt-screen px-2">
       <View className="px-2 pb-2">
         <Text className="text-lg font-sans">
           {hasHydrated
@@ -74,7 +75,7 @@ export const LibraryScreen = () => {
           accessibilityRole="button"
           accessibilityLabel="Add a new book"
         >
-          <Ionicons name="add" size={28} color="#fff" />
+          <Ionicons name="add" size={28} color={themeColors.text.inverse} />
         </Pressable>
       </View>
     </View>

@@ -4,14 +4,18 @@ import { Modal, Pressable, ScrollView, Text, View } from "react-native";
 type AboutBookModalProps = {
   visible: boolean;
   onClose: () => void;
+  title: string;
+  author: string;
   description?: string | null;
 };
 
-export function AboutBookModal({
+export const AboutBookModal = ({
   visible,
   onClose,
+  title,
+  author,
   description,
-}: AboutBookModalProps) {
+}: AboutBookModalProps) => {
   return (
     <Modal
       visible={visible}
@@ -48,6 +52,15 @@ export function AboutBookModal({
           </View>
 
           <ScrollView className="mt-4" showsVerticalScrollIndicator={false}>
+            <View className="mb-4">
+              <Text className="text-base font-sansSemibold text-text">
+                {title}
+              </Text>
+              <Text className="mt-1 text-sm font-sans text-text-muted">
+                {author}
+              </Text>
+            </View>
+
             <View className="border-l-4 border-brand pl-3">
               <Text className="text-sm font-sans text-text-muted">
                 {description?.trim()
@@ -60,4 +73,4 @@ export function AboutBookModal({
       </Pressable>
     </Modal>
   );
-}
+};
