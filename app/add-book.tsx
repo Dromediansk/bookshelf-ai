@@ -17,6 +17,7 @@ export const AddBookScreen = () => {
       author: values.author || "Unknown",
       genre: values.genre,
       status: values.status,
+      description: values.description.trim() || undefined,
       createdAt: nowIso,
       updatedAt: nowIso,
       noteIds: [],

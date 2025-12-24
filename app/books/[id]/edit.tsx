@@ -74,6 +74,7 @@ export const EditBookScreen = () => {
           author: book.author,
           genre: book.genre,
           status: book.status,
+          description: book.description ?? "",
         }}
         onSubmit={(values) => {
           updateBook(book.id, {
@@ -81,6 +82,7 @@ export const EditBookScreen = () => {
             author: values.author || "Unknown",
             genre: values.genre,
             status: values.status,
+            description: values.description.trim() || undefined,
           });
           router.back();
         }}

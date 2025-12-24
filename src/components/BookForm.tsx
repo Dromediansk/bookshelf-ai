@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Pressable, Text, TextInput, View } from "react-native";
+import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 
 import { type BookGenre, type BookStatus } from "@/types/book";
 import FormGenresSection from "./FormGenresSection";
@@ -7,6 +7,7 @@ import FormGenresSection from "./FormGenresSection";
 export type BookFormValues = {
   title: string;
   author: string;
+  description: string;
   genre: BookGenre;
   status: BookStatus;
 };
@@ -32,6 +33,9 @@ export const BookForm = ({
 }: BookFormProps) => {
   const [title, setTitle] = useState(initialValues?.title ?? "");
   const [author, setAuthor] = useState(initialValues?.author ?? "");
+  const [description, setDescription] = useState(
+    initialValues?.description ?? ""
+  );
   const [genre, setGenre] = useState<BookGenre>(
     initialValues?.genre ?? "Unknown"
   );
@@ -42,11 +46,13 @@ export const BookForm = ({
   useEffect(() => {
     setTitle(initialValues?.title ?? "");
     setAuthor(initialValues?.author ?? "");
+    setDescription(initialValues?.description ?? "");
     setGenre(initialValues?.genre ?? "Unknown");
     setStatus(initialValues?.status ?? "to-read");
   }, [
     initialValues?.title,
     initialValues?.author,
+    initialValues?.description,
     initialValues?.genre,
     initialValues?.status,
   ]);
@@ -59,14 +65,19 @@ export const BookForm = ({
     onSubmit({
       title: title.trim(),
       author: author.trim(),
+      description: description.trim(),
       genre,
       status,
     });
   }
 
   return (
-    <View className="flex-1 justify-between px-6 py-6">
-      <View>
+    <View className="flex-1 px-4 py-4">
+      <ScrollView
+        className="flex-1"
+        contentContainerStyle={{ paddingBottom: 24 }}
+        keyboardShouldPersistTaps="handled"
+      >
         <View className="mb-5">
           <Text className="mb-2 text-sm font-sansMedium text-text">
             Book name
@@ -91,6 +102,21 @@ export const BookForm = ({
             placeholder="e.g. Frank Herbert"
             className="rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text"
             autoCapitalize="words"
+          />
+        </View>
+
+        <View className="mb-5">
+          <Text className="mb-2 text-sm font-sansMedium text-text">
+            Description (optional)
+          </Text>
+          <TextInput
+            value={description}
+            onChangeText={setDescription}
+            placeholder="Add a short description..."
+            className="h-32 rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text"
+            multiline
+            numberOfLines={6}
+            textAlignVertical="top"
           />
         </View>
 
@@ -132,9 +158,9 @@ export const BookForm = ({
             })}
           </View>
         </View>
-      </View>
+      </ScrollView>
 
-      <View>
+      <View className="pt-2">
         <Pressable
           onPress={handleSubmit}
           disabled={!canSave}
