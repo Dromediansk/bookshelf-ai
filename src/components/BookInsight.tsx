@@ -1,18 +1,18 @@
 import { useBooksStore } from "@/store/booksStore";
-import { useNotesStore } from "@/store/notesStore";
-import { Note } from "@/types/note";
+import { useInsightsStore } from "@/store/insightsStore";
+import { Insight } from "@/types/insight";
 import { toTime } from "@/utils/helpers";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { FC } from "react";
 import { Pressable, Text, View } from "react-native";
 
-type BookNoteProps = {
+type BookInsightProps = {
   bookId: string;
-  note: Note;
+  insight: Insight;
 };
 
-function formatNoteDate(value: string | undefined) {
+function formatInsightDate(value: string | undefined) {
   const time = toTime(value);
   if (!time) return undefined;
 
@@ -23,30 +23,30 @@ function formatNoteDate(value: string | undefined) {
   });
 }
 
-const BookNote: FC<BookNoteProps> = ({ bookId, note }) => {
+const BookInsight: FC<BookInsightProps> = ({ bookId, insight }) => {
   const { hasHydrated } = useBooksStore();
-  const { deleteNote } = useNotesStore();
+  const { deleteInsight } = useInsightsStore();
 
-  const dateLabel = formatNoteDate(note.createdAt);
+  const dateLabel = formatInsightDate(insight.createdAt);
 
   return (
     <Pressable
-      key={note.id}
+      key={insight.id}
       onPress={() =>
         router.push({
-          pathname: "/books/[id]/notes/[noteId]/edit",
-          params: { id: bookId, noteId: note.id },
+          pathname: "/books/[id]/insights/[insightId]/edit",
+          params: { id: bookId, insightId: insight.id },
         })
       }
       disabled={!hasHydrated}
       className="rounded-card border border-border bg-surface-muted px-card py-card"
       accessibilityRole="button"
-      accessibilityLabel="Edit note"
+      accessibilityLabel="Edit insight"
     >
       <View className={hasHydrated ? undefined : "opacity-60"}>
         <View className="flex-row items-start justify-between gap-3">
           <Text className="flex-1 text-sm font-sans text-text">
-            {note.content}
+            {insight.content}
           </Text>
           {dateLabel ? (
             <Text className="text-xs font-sans text-text-subtle">
@@ -57,9 +57,9 @@ const BookNote: FC<BookNoteProps> = ({ bookId, note }) => {
 
         <View className="mt-3 flex-row items-start justify-between gap-3">
           <View className="flex-1 flex-row flex-wrap gap-2">
-            {note.tags?.map((tag) => (
+            {insight.tags?.map((tag) => (
               <View
-                key={`${note.id}:${tag}`}
+                key={`${insight.id}:${tag}`}
                 className="rounded-full border border-border bg-surface px-2 py-1"
               >
                 <Text className="text-xs font-sansMedium text-text">{tag}</Text>
@@ -71,7 +71,7 @@ const BookNote: FC<BookNoteProps> = ({ bookId, note }) => {
             onPress={(event) => {
               event.stopPropagation?.();
               if (!hasHydrated) return;
-              deleteNote(bookId, note.id);
+              deleteInsight(bookId, insight.id);
             }}
             disabled={!hasHydrated}
             className={
@@ -80,7 +80,7 @@ const BookNote: FC<BookNoteProps> = ({ bookId, note }) => {
                 : "rounded-control border border-border bg-surface-muted p-2"
             }
             accessibilityRole="button"
-            accessibilityLabel="Delete note"
+            accessibilityLabel="Delete insight"
           >
             <Ionicons name="trash-outline" size={18} />
           </Pressable>
@@ -90,4 +90,4 @@ const BookNote: FC<BookNoteProps> = ({ bookId, note }) => {
   );
 };
 
-export default BookNote;
+export default BookInsight;

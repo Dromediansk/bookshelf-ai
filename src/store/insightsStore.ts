@@ -3,30 +3,34 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 import { useBooksStore } from "@/store/booksStore";
-import type { Note } from "@/types/note";
-import { MOCK_NOTES } from "mocks/notes";
+import type { Insight } from "@/types/insight";
+import { MOCK_INSIGHTS } from "mocks/insights";
 import { randomUUID } from "expo-crypto";
 
-type NoteInput = {
+type InsightInput = {
   content: string;
   tags?: string[] | string;
 };
 
-type NoteUpdates = {
+type InsightUpdates = {
   content?: string;
   tags?: string[] | string;
 };
 
-type NotesState = {
-  notes: Note[];
+type InsightsState = {
+  insights: Insight[];
   hasHydrated: boolean;
-  addNote: (bookId: string, note: NoteInput) => void;
-  updateNote: (bookId: string, noteId: string, updates: NoteUpdates) => void;
-  deleteNote: (bookId: string, noteId: string) => void;
-  setNotes: (notes: Note[]) => void;
+  addInsight: (bookId: string, insight: InsightInput) => void;
+  updateInsight: (
+    bookId: string,
+    insightId: string,
+    updates: InsightUpdates
+  ) => void;
+  deleteInsight: (bookId: string, insightId: string) => void;
+  setInsights: (insights: Insight[]) => void;
   setHasHydrated: (hasHydrated: boolean) => void;
-  getNotesByBookId: (bookId: string) => Note[];
-  getNotesByIds: (ids: string[]) => Note[];
+  getInsightsByBookId: (bookId: string) => Insight[];
+  getInsightsByIds: (ids: string[]) => Insight[];
 };
 
 function normalizeTags(tags: string[] | string | undefined): string[] {
@@ -50,100 +54,106 @@ function normalizeTags(tags: string[] | string | undefined): string[] {
   return result;
 }
 
-export const useNotesStore = create<NotesState>()(
+export const useInsightsStore = create<InsightsState>()(
   persist(
     (set, get) => ({
-      notes: MOCK_NOTES,
+      insights: MOCK_INSIGHTS,
       hasHydrated: false,
 
-      setNotes: (notes) => set({ notes }),
+      setInsights: (insights) => set({ insights }),
       setHasHydrated: (hasHydrated) => set({ hasHydrated }),
 
-      getNotesByBookId: (bookId) =>
-        get().notes.filter((note) => note.bookId === bookId),
+      getInsightsByBookId: (bookId) =>
+        get().insights.filter((insight) => insight.bookId === bookId),
 
-      getNotesByIds: (ids) => {
+      getInsightsByIds: (ids) => {
         if (!ids.length) return [];
         const idSet = new Set(ids);
-        return get().notes.filter((note) => idSet.has(note.id));
+        return get().insights.filter((insight) => idSet.has(insight.id));
       },
 
-      addNote: (bookId, note) => {
-        const content = note.content.trim();
+      addInsight: (bookId, insight) => {
+        const content = insight.content.trim();
         if (!content) return;
 
         const nowIso = new Date().toISOString();
 
-        const newNote: Note = {
+        const newInsight: Insight = {
           id: randomUUID(),
           bookId,
           content,
-          tags: normalizeTags(note.tags),
+          tags: normalizeTags(insight.tags),
           createdAt: nowIso,
         };
 
         set((state) => ({
-          notes: [newNote, ...state.notes],
+          insights: [newInsight, ...state.insights],
         }));
 
-        // Attach the note id to the book.
+        // Attach the insight id to the book.
         useBooksStore.setState((state) => ({
           books: state.books.map((book) => {
             if (book.id !== bookId) return book;
-            const existing = Array.isArray(book.noteIds) ? book.noteIds : [];
-            if (existing.includes(newNote.id)) return book;
+            const existing = Array.isArray(book.insightIds)
+              ? book.insightIds
+              : [];
+            if (existing.includes(newInsight.id)) return book;
             return {
               ...book,
-              noteIds: [...existing, newNote.id],
+              insightIds: [...existing, newInsight.id],
               updatedAt: nowIso,
             };
           }),
         }));
       },
 
-      updateNote: (bookId, noteId, updates) => {
+      updateInsight: (bookId, insightId, updates) => {
         const nextContent =
           typeof updates.content === "string"
             ? updates.content.trim()
             : undefined;
 
         set((state) => ({
-          notes: state.notes.map((note) => {
-            if (note.id !== noteId) return note;
-            if (note.bookId !== bookId) return note;
+          insights: state.insights.map((insight) => {
+            if (insight.id !== insightId) return insight;
+            if (insight.bookId !== bookId) return insight;
 
             return {
-              ...note,
+              ...insight,
               content:
                 nextContent && nextContent.length > 0
                   ? nextContent
-                  : note.content,
+                  : insight.content,
               tags:
                 updates.tags === undefined
-                  ? note.tags
+                  ? insight.tags
                   : normalizeTags(updates.tags),
             };
           }),
         }));
       },
 
-      deleteNote: (bookId, noteId) => {
+      deleteInsight: (bookId, insightId) => {
         const nowIso = new Date().toISOString();
 
-        // 1) Remove the note content from the global notes list.
+        // 1) Remove the insight content from the global insights list.
         set((state) => ({
-          notes: state.notes.filter((note) => note.id !== noteId),
+          insights: state.insights.filter(
+            (insight) => insight.id !== insightId
+          ),
         }));
 
         // 2) Detach the reference from the book.
         useBooksStore.setState((state) => ({
           books: state.books.map((book) => {
             if (book.id !== bookId) return book;
-            const existing = Array.isArray(book.noteIds) ? book.noteIds : [];
-            if (!existing.includes(noteId)) return book;
+            const existing = Array.isArray(book.insightIds)
+              ? book.insightIds
+              : [];
+            if (!existing.includes(insightId)) return book;
             return {
               ...book,
-              noteIds: existing.filter((id) => id !== noteId),
+              insightIds: existing.filter((id) => id !== insightId),
               updatedAt: nowIso,
             };
           }),
@@ -151,9 +161,9 @@ export const useNotesStore = create<NotesState>()(
       },
     }),
     {
-      name: "notes-store-v1",
+      name: "insights-store-v1",
       storage: createJSONStorage(() => AsyncStorage),
-      partialize: (state) => ({ notes: state.notes }),
+      partialize: (state) => ({ insights: state.insights }),
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
       },

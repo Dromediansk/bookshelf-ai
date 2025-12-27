@@ -13,7 +13,7 @@ dayjs.extend(relativeTime);
  * - UI helpers and “good enough” comparisons where missing/invalid dates should behave like 0.
  * - Convenience sorting where you’re OK with missing/invalid dates being treated as the epoch.
  *
- * Note:
+ * Insight:
  * - Because missing/invalid returns 0, this can unintentionally push items earlier/later depending on
  *   sort direction. If you need to explicitly place “unknown dates” last/first, prefer `toValidTime`.
  */

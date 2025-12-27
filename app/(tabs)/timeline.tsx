@@ -2,9 +2,9 @@ import { useMemo } from "react";
 import { FlatList, Text, View } from "react-native";
 
 import { useBooksStore } from "@/store/booksStore";
-import { useNotesStore } from "@/store/notesStore";
+import { useInsightsStore } from "@/store/insightsStore";
 import type { Book } from "@/types/book";
-import type { Note } from "@/types/note";
+import type { Insight } from "@/types/insight";
 import {
   formatRelativeTime,
   isWithinLastNDays,
@@ -13,22 +13,25 @@ import {
 
 type TimelineEvent = {
   id: string;
-  type: "note" | "finished-book";
+  type: "insight" | "finished-book";
   createdAt: string;
   bookTitle: string;
 };
 
 const LAST_N_DAYS = 7;
 
-const buildTimelineEvents = (books: Book[], notes: Note[]): TimelineEvent[] => {
+const buildTimelineEvents = (
+  books: Book[],
+  insights: Insight[]
+): TimelineEvent[] => {
   const bookById = new Map(books.map((book) => [book.id, book] as const));
 
-  const noteEvents: TimelineEvent[] = notes.map((note) => {
-    const book = bookById.get(note.bookId);
+  const insightEvents: TimelineEvent[] = insights.map((insight) => {
+    const book = bookById.get(insight.bookId);
     return {
-      id: `note:${note.id}`,
-      type: "note",
-      createdAt: note.createdAt,
+      id: `insight:${insight.id}`,
+      type: "insight",
+      createdAt: insight.createdAt,
       bookTitle: book ? book.title : "Unknown book",
     };
   });
@@ -43,29 +46,29 @@ const buildTimelineEvents = (books: Book[], notes: Note[]): TimelineEvent[] => {
     }));
 
   return sortByDateDesc(
-    [...noteEvents, ...finishedBookEvents],
+    [...insightEvents, ...finishedBookEvents],
     (e) => e.createdAt
   );
 };
 
 export const TimelineScreen = () => {
   const { books, hasHydrated: booksHydrated } = useBooksStore();
-  const { notes, hasHydrated: notesHydrated } = useNotesStore();
+  const { insights, hasHydrated: insightsHydrated } = useInsightsStore();
 
-  const hasHydrated = booksHydrated && notesHydrated;
+  const hasHydrated = booksHydrated && insightsHydrated;
   const nowMs = Date.now();
 
   const {
     events,
-    weeklyNotes,
+    weeklyInsights,
     weeklyFinishedBooks,
-    lastWeeklyNote,
+    lastWeeklyInsight,
     hasAnyData,
   } = useMemo(() => {
-    const hasAnyData = books.length > 0 || notes.length > 0;
+    const hasAnyData = books.length > 0 || insights.length > 0;
 
-    const weeklyNotes = notes.filter((note) =>
-      isWithinLastNDays(note.createdAt, LAST_N_DAYS, nowMs)
+    const weeklyInsights = insights.filter((insight) =>
+      isWithinLastNDays(insight.createdAt, LAST_N_DAYS, nowMs)
     );
 
     const weeklyFinishedBooks = books.filter(
@@ -74,18 +77,21 @@ export const TimelineScreen = () => {
         isWithinLastNDays(book.updatedAt, LAST_N_DAYS, nowMs)
     );
 
-    const lastWeeklyNote = sortByDateDesc(weeklyNotes, (n) => n.createdAt)[0];
+    const lastWeeklyInsight = sortByDateDesc(
+      weeklyInsights,
+      (n) => n.createdAt
+    )[0];
 
-    const events = buildTimelineEvents(books, notes);
+    const events = buildTimelineEvents(books, insights);
 
     return {
       events,
-      weeklyNotes,
+      weeklyInsights,
       weeklyFinishedBooks,
-      lastWeeklyNote,
+      lastWeeklyInsight,
       hasAnyData,
     };
-  }, [books, notes, nowMs]);
+  }, [books, insights, nowMs]);
 
   if (!hasHydrated) {
     return (
@@ -98,7 +104,7 @@ export const TimelineScreen = () => {
   }
 
   const hasWeeklyData =
-    weeklyNotes.length > 0 || weeklyFinishedBooks.length > 0;
+    weeklyInsights.length > 0 || weeklyFinishedBooks.length > 0;
 
   return (
     <View className="flex-1 bg-surface-muted py-screen">
@@ -116,16 +122,16 @@ export const TimelineScreen = () => {
 
               {!hasWeeklyData ? (
                 <Text className="mt-3 text-sm font-sans text-text-muted">
-                  Start reading and writing notes to see your weekly summary.
+                  Start reading and writing insights to see your weekly summary.
                 </Text>
               ) : (
                 <View className="mt-3">
                   <View className="flex-row items-center justify-between">
                     <Text className="text-sm font-sans text-text-muted">
-                      Notes written
+                      Insights written
                     </Text>
                     <Text className="text-sm font-sansSemibold text-text">
-                      {weeklyNotes.length}
+                      {weeklyInsights.length}
                     </Text>
                   </View>
 
@@ -140,18 +146,18 @@ export const TimelineScreen = () => {
 
                   <View className="mt-4">
                     <Text className="text-sm font-sans text-text-muted">
-                      Last note this week
+                      Last insight this week
                     </Text>
-                    {!!lastWeeklyNote ? (
+                    {!!lastWeeklyInsight ? (
                       <Text
                         className="mt-2 text-sm font-sans text-text"
                         numberOfLines={2}
                       >
-                        {lastWeeklyNote.content}
+                        {lastWeeklyInsight.content}
                       </Text>
                     ) : (
                       <Text className="mt-2 text-sm font-sans text-text-subtle">
-                        No notes yet this week.
+                        No insights yet this week.
                       </Text>
                     )}
                   </View>
@@ -170,10 +176,10 @@ export const TimelineScreen = () => {
           const relative = formatRelativeTime(item.createdAt, nowMs);
 
           const description =
-            item.type === "note"
+            item.type === "insight"
               ? item.bookTitle
-                ? `You wrote a note • ${item.bookTitle}`
-                : "You wrote a note"
+                ? `You wrote a insight • ${item.bookTitle}`
+                : "You wrote a insight"
               : `You finished a book • ${item.bookTitle}`;
 
           return (
@@ -196,7 +202,7 @@ export const TimelineScreen = () => {
                 No activity yet.
               </Text>
               <Text className="mt-1 text-sm font-sans text-text-subtle">
-                Add a book or write a note to start your timeline.
+                Add a book or write a insight to start your timeline.
               </Text>
             </View>
           ) : events.length === 0 ? (
@@ -205,7 +211,7 @@ export const TimelineScreen = () => {
                 No recent activity to show.
               </Text>
               <Text className="mt-1 text-sm font-sans text-text-subtle">
-                Write a note or finish a book to see updates here.
+                Write a insight or finish a book to see updates here.
               </Text>
             </View>
           ) : (

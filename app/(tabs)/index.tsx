@@ -68,12 +68,13 @@ export const LibraryScreen = () => {
         />
       )}
 
-      <View className="absolute bottom-6 left-0 right-0 items-center">
+      <View className="absolute bottom-6 left-0 right-6 items-end">
         <Pressable
           onPress={() => router.push("/add-book")}
           className="h-14 w-14 items-center justify-center rounded-full bg-brand"
           accessibilityRole="button"
           accessibilityLabel="Add a new book"
+          hitSlop={10}
         >
           <Ionicons name="add" size={28} color={themeColors.text.inverse} />
         </Pressable>

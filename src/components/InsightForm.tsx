@@ -1,32 +1,32 @@
-import { NoteMode } from "@/types/note";
+import { InsightMode } from "@/types/insight";
 import { FC } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
 
-type NoteFormProps = {
-  noteMode: NoteMode;
+type InsightFormProps = {
+  insightMode: InsightMode;
   draftContent: string;
   setDraftContent: (value: string) => void;
   draftTags: string;
   setDraftTags: (value: string) => void;
-  canSaveNote: boolean;
-  submitNote: () => void;
+  canSaveInsight: boolean;
+  submitInsight: () => void;
   resetDraft: () => void;
 };
 
-const NoteForm: FC<NoteFormProps> = ({
-  noteMode,
+const InsightForm: FC<InsightFormProps> = ({
+  insightMode,
   draftContent,
   setDraftContent,
   draftTags,
   setDraftTags,
-  canSaveNote,
-  submitNote,
+  canSaveInsight,
+  submitInsight,
   resetDraft,
 }) => {
   return (
     <View className="border border-border bg-surface-muted px-card py-card">
       <Text className="text-sm font-sansSemibold text-brand">
-        {noteMode === "add" ? "New note" : "Edit note"}
+        {insightMode === "add" ? "New insight" : "Edit insight"}
       </Text>
 
       <View className="mt-4">
@@ -59,26 +59,26 @@ const NoteForm: FC<NoteFormProps> = ({
 
       <View className="mt-5">
         <Pressable
-          onPress={submitNote}
-          disabled={!canSaveNote}
+          onPress={submitInsight}
+          disabled={!canSaveInsight}
           className={
-            canSaveNote
+            canSaveInsight
               ? "rounded-control bg-brand px-card py-button"
               : "rounded-control bg-surface px-card py-button"
           }
           accessibilityRole="button"
           accessibilityLabel={
-            noteMode === "add" ? "Add note" : "Save note changes"
+            insightMode === "add" ? "Add insight" : "Save insight changes"
           }
         >
           <Text
             className={
-              canSaveNote
+              canSaveInsight
                 ? "text-center text-base font-sansSemibold text-text-inverse"
                 : "text-center text-base font-sansSemibold text-text-subtle"
             }
           >
-            {noteMode === "add" ? "Add note" : "Save"}
+            {insightMode === "add" ? "Add insight" : "Save"}
           </Text>
         </Pressable>
 
@@ -86,7 +86,7 @@ const NoteForm: FC<NoteFormProps> = ({
           onPress={resetDraft}
           className="mt-3 rounded-control border border-border bg-surface px-card py-button"
           accessibilityRole="button"
-          accessibilityLabel="Cancel note"
+          accessibilityLabel="Cancel insight"
         >
           <Text className="text-center text-base font-sansSemibold text-text">
             Cancel
@@ -97,4 +97,4 @@ const NoteForm: FC<NoteFormProps> = ({
   );
 };
 
-export default NoteForm;
+export default InsightForm;

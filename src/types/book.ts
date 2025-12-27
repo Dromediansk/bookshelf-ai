@@ -14,5 +14,5 @@ export type Book = {
   updatedAt: string;
   description?: string;
   cover?: string;
-  noteIds: string[];
+  insightIds: string[];
 };

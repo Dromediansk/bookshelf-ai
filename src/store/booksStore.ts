@@ -42,13 +42,13 @@ export const useBooksStore = create<BooksState>()(
         })),
 
       removeBook: (id) => {
-        // Cascade delete notes for this book.
-        const { useNotesStore } =
+        // Cascade delete insights for this book.
+        const { useInsightsStore } =
           // eslint-disable-next-line @typescript-eslint/no-require-imports
-          require("@/store/notesStore") as typeof import("@/store/notesStore");
-        const notesState = useNotesStore.getState();
-        notesState.setNotes(
-          notesState.notes.filter((note) => note.bookId !== id)
+          require("@/store/insightsStore") as typeof import("@/store/insightsStore");
+        const insightsState = useInsightsStore.getState();
+        insightsState.setInsights(
+          insightsState.insights.filter((insight) => insight.bookId !== id)
         );
 
         set((state) => ({

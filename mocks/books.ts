@@ -10,7 +10,7 @@ export const MOCK_BOOKS: Book[] = [
     createdAt: "2025-12-01T09:00:00.000Z",
     updatedAt: "2025-12-20T09:15:00.000Z",
     description: "A thrilling sci-fi adventure about a lone astronaut.",
-    noteIds: ["note_001", "note_002"],
+    insightIds: ["insight_001", "insight_002"],
   },
   {
     id: "bk_002",
@@ -22,7 +22,7 @@ export const MOCK_BOOKS: Book[] = [
     updatedAt: "2025-11-20T18:30:00.000Z",
     description:
       "An epic fantasy tale of a gifted young musician and magician.",
-    noteIds: [],
+    insightIds: [],
   },
   {
     id: "bk_003",
@@ -33,7 +33,7 @@ export const MOCK_BOOKS: Book[] = [
     createdAt: "2025-10-02T07:15:00.000Z",
     updatedAt: "2025-12-19T20:10:00.000Z",
     description: "A guide to building good habits and breaking bad ones.",
-    noteIds: [],
+    insightIds: [],
   },
   {
     id: "bk_004",
@@ -44,6 +44,6 @@ export const MOCK_BOOKS: Book[] = [
     createdAt: "2025-12-10T12:00:00.000Z",
     updatedAt: "2025-12-10T12:00:00.000Z",
     description: "A science fiction saga set on the desert planet Arrakis.",
-    noteIds: [],
+    insightIds: [],
   },
 ];

@@ -5,14 +5,16 @@ import { cssInterop } from "nativewind";
 
 import type { Book } from "@/types/book";
 
-const TailwindIonicons = cssInterop(Ionicons, { className: "style" });
+const TailwindIonicons = cssInterop(Ionicons, {
+  className: "style",
+});
 
 type BookCardProps = {
   book: Book;
 };
 
 export const BookCard = ({ book }: BookCardProps) => {
-  const notesCount = book.noteIds?.length ?? 0;
+  const insightsCount = book.insightIds?.length ?? 0;
 
   return (
     <Pressable
@@ -49,14 +51,14 @@ export const BookCard = ({ book }: BookCardProps) => {
 
           <View className="mt-2 flex-row items-center gap-1">
             <TailwindIonicons
-              name="document-text-outline"
+              name="bulb-outline"
               size={14}
               className="text-text-subtle"
               accessibilityElementsHidden
               importantForAccessibility="no"
             />
             <Text className="text-sm font-sans text-text-muted">
-              {notesCount}
+              {insightsCount}
             </Text>
           </View>
         </View>

@@ -5,10 +5,11 @@ import { cssInterop } from "nativewind";
 
 import { StatusBadge } from "@/components/StatusBadge";
 import { useBooksStore } from "@/store/booksStore";
-import { NotesSection } from "@/components/NotesSection";
+import { InsightsSection } from "@/components/InsightsSection";
 import { AboutBookModal } from "@/components/AboutBookModal";
 import { useState } from "react";
 import { formatCreatedAt } from "@/utils/helpers";
+import themeColors from "@/utils/colors";
 
 type BookDetailScreenParams = {
   id: string;
@@ -24,7 +25,7 @@ export const BookDetailScreen = () => {
 
   const openAbout = () => setIsAboutOpen(true);
 
-  const { getBookById } = useBooksStore();
+  const { getBookById, hasHydrated } = useBooksStore();
   const book = getBookById(bookId);
 
   if (!bookId || !book) {
@@ -147,7 +148,33 @@ export const BookDetailScreen = () => {
           description={description}
         />
 
-        <NotesSection book={book} />
+        <InsightsSection book={book} />
+
+        <View className="absolute bottom-4 left-0 right-4">
+          <Pressable
+            onPress={() =>
+              router.push({
+                pathname: "/books/[id]/insights/new",
+                params: { id },
+              })
+            }
+            disabled={!hasHydrated}
+            accessibilityRole="button"
+            accessibilityLabel="Add insight"
+            hitSlop={10}
+            className={
+              hasHydrated
+                ? "absolute bottom-6 right-6 rounded-full bg-brand p-3"
+                : "absolute bottom-6 right-6 rounded-full bg-surface-muted p-3"
+            }
+          >
+            <TailwindIonicons
+              name="bulb"
+              size={28}
+              color={themeColors.text.inverse}
+            />
+          </Pressable>
+        </View>
       </View>
     </View>
   );

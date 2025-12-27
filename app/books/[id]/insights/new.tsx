@@ -2,27 +2,27 @@ import { useMemo, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 
-import NoteForm from "@/components/NoteForm";
+import InsightForm from "@/components/InsightForm";
 import { useBooksStore } from "@/store/booksStore";
-import { useNotesStore } from "@/store/notesStore";
+import { useInsightsStore } from "@/store/insightsStore";
 
-type NewNoteParams = {
+type NewInsightParams = {
   id: string;
 };
 
-const NewNoteModal = () => {
-  const params = useLocalSearchParams<NewNoteParams>();
+const NewInsightModal = () => {
+  const params = useLocalSearchParams<NewInsightParams>();
   const bookId = params.id;
 
   const { hasHydrated, getBookById } = useBooksStore();
-  const { addNote } = useNotesStore();
+  const { addInsight } = useInsightsStore();
 
   const book = bookId ? getBookById(bookId) : undefined;
 
   const [draftContent, setDraftContent] = useState("");
   const [draftTags, setDraftTags] = useState("");
 
-  const canSaveNote = useMemo(
+  const canSaveInsight = useMemo(
     () => hasHydrated && draftContent.trim().length > 0,
     [draftContent, hasHydrated]
   );
@@ -77,9 +77,9 @@ const NewNoteModal = () => {
     );
   }
 
-  function submitNote() {
-    if (!canSaveNote) return;
-    addNote(bookId, { content: draftContent, tags: draftTags });
+  function submitInsight() {
+    if (!canSaveInsight) return;
+    addInsight(bookId, { content: draftContent, tags: draftTags });
     router.back();
   }
 
@@ -87,14 +87,14 @@ const NewNoteModal = () => {
     <View className="flex-1 bg-surface-muted">
       <Stack.Screen options={{ title: book.title }} />
       <View className="flex-1">
-        <NoteForm
-          noteMode="add"
+        <InsightForm
+          insightMode="add"
           draftContent={draftContent}
           setDraftContent={setDraftContent}
           draftTags={draftTags}
           setDraftTags={setDraftTags}
-          canSaveNote={canSaveNote}
-          submitNote={submitNote}
+          canSaveInsight={canSaveInsight}
+          submitInsight={submitInsight}
           resetDraft={() => router.back()}
         />
       </View>
@@ -102,4 +102,4 @@ const NewNoteModal = () => {
   );
 };
 
-export default NewNoteModal;
+export default NewInsightModal;

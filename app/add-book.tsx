@@ -20,7 +20,7 @@ export const AddBookScreen = () => {
       description: values.description.trim() || undefined,
       createdAt: nowIso,
       updatedAt: nowIso,
-      noteIds: [],
+      insightIds: [],
     };
 
     addBook(book);

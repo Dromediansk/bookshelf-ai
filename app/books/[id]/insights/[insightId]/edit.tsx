@@ -2,26 +2,28 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 
-import NoteForm from "@/components/NoteForm";
+import InsightForm from "@/components/InsightForm";
 import { useBooksStore } from "@/store/booksStore";
-import { useNotesStore } from "@/store/notesStore";
+import { useInsightsStore } from "@/store/insightsStore";
 
-type EditNoteParams = {
+type EditInsightParams = {
   id: string;
-  noteId: string;
+  insightId: string;
 };
 
-const EditNoteModal = () => {
-  const params = useLocalSearchParams<EditNoteParams>();
+const EditInsightModal = () => {
+  const params = useLocalSearchParams<EditInsightParams>();
   const bookId = params.id;
-  const noteId = params.noteId;
+  const insightId = params.insightId;
 
   const { hasHydrated, getBookById } = useBooksStore();
-  const { updateNote, notes } = useNotesStore();
+  const { updateInsight, insights } = useInsightsStore();
 
   const book = bookId ? getBookById(bookId) : undefined;
-  const note = noteId ? notes.find((value) => value.id === noteId) : undefined;
-  const noteMatchesBook = !!note && !!bookId && note.bookId === bookId;
+  const insight = insightId
+    ? insights.find((value) => value.id === insightId)
+    : undefined;
+  const insightMatchesBook = !!insight && !!bookId && insight.bookId === bookId;
 
   const [draftContent, setDraftContent] = useState("");
   const [draftTags, setDraftTags] = useState("");
@@ -29,15 +31,15 @@ const EditNoteModal = () => {
 
   useEffect(() => {
     if (!hasHydrated) return;
-    if (!noteMatchesBook) return;
+    if (!insightMatchesBook) return;
     if (didInitDraft.current) return;
 
-    setDraftContent(note.content ?? "");
-    setDraftTags(note.tags?.join(", ") ?? "");
+    setDraftContent(insight.content ?? "");
+    setDraftTags(insight.tags?.join(", ") ?? "");
     didInitDraft.current = true;
-  }, [hasHydrated, noteMatchesBook, note]);
+  }, [hasHydrated, insightMatchesBook, insight]);
 
-  const canSaveNote = useMemo(
+  const canSaveInsight = useMemo(
     () => hasHydrated && draftContent.trim().length > 0,
     [draftContent, hasHydrated]
   );
@@ -92,15 +94,15 @@ const EditNoteModal = () => {
     );
   }
 
-  if (!noteId || !noteMatchesBook) {
+  if (!insightId || !insightMatchesBook) {
     return (
       <View className="flex-1 bg-surface py-2">
         <View className="flex-1 items-center justify-center px-2">
           <Text className="text-base font-sansMedium text-text">
-            Note not found
+            Insight not found
           </Text>
           <Text className="mt-2 text-sm font-sans text-text-muted">
-            The note you’re looking for no longer exists.
+            The insight you’re looking for no longer exists.
           </Text>
           <Pressable
             onPress={() => router.back()}
@@ -117,9 +119,12 @@ const EditNoteModal = () => {
     );
   }
 
-  function submitNote() {
-    if (!canSaveNote) return;
-    updateNote(bookId, noteId, { content: draftContent, tags: draftTags });
+  function submitInsight() {
+    if (!canSaveInsight) return;
+    updateInsight(bookId, insightId, {
+      content: draftContent,
+      tags: draftTags,
+    });
     router.back();
   }
 
@@ -127,14 +132,14 @@ const EditNoteModal = () => {
     <View className="flex-1 bg-surface-muted">
       <Stack.Screen options={{ title: book.title }} />
       <View className="flex-1">
-        <NoteForm
-          noteMode="edit"
+        <InsightForm
+          insightMode="edit"
           draftContent={draftContent}
           setDraftContent={setDraftContent}
           draftTags={draftTags}
           setDraftTags={setDraftTags}
-          canSaveNote={canSaveNote}
-          submitNote={submitNote}
+          canSaveInsight={canSaveInsight}
+          submitInsight={submitInsight}
           resetDraft={() => router.back()}
         />
       </View>
@@ -142,4 +147,4 @@ const EditNoteModal = () => {
   );
 };
 
-export default EditNoteModal;
+export default EditInsightModal;
