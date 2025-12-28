@@ -31,7 +31,7 @@ export const LibraryScreen = () => {
   return (
     <View className="relative flex-1 pt-screen px-2">
       <View className="px-2 pb-2">
-        <Text className="text-lg font-sans">
+        <Text className="text-lg font-sansMedium text-brand font-bold">
           {hasHydrated
             ? `${books.length} book${books.length === 1 ? "" : "s"}`
             : "Loading…"}

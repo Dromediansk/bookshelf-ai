@@ -74,7 +74,7 @@ export const BookForm = ({
 
   const canSave = useMemo(() => title.trim().length > 0, [title]);
 
-  function handleSubmit() {
+  const handleSubmit = () => {
     if (!canSave) return;
 
     onSubmit({
@@ -85,7 +85,7 @@ export const BookForm = ({
       status,
       createdAt: createdAt.toISOString(),
     });
-  }
+  };
 
   return (
     <View className="flex-1 px-4 py-4">
@@ -113,10 +113,10 @@ export const BookForm = ({
           </Pressable>
 
           {isBookDetailsExpanded && (
-            <View>
+            <View className="px-4">
               <View className="mb-5">
                 <Text className="mb-2 text-sm font-sansMedium text-text">
-                  Book name
+                  Book name *
                 </Text>
                 <TextInput
                   value={title}
@@ -130,7 +130,7 @@ export const BookForm = ({
 
               <View className="mb-5">
                 <Text className="mb-2 text-sm font-sansMedium text-text">
-                  Author (optional)
+                  Author
                 </Text>
                 <TextInput
                   value={author}
@@ -143,7 +143,7 @@ export const BookForm = ({
 
               <View className="mb-6">
                 <Text className="mb-2 text-sm font-sansMedium text-text">
-                  Genre (optional)
+                  Genre
                 </Text>
                 <FormGenresSection genre={genre} setGenre={setGenre} />
               </View>
@@ -172,15 +172,15 @@ export const BookForm = ({
           </Pressable>
 
           {isAdditionalDetailsExpanded && (
-            <View>
+            <View className="px-4">
               <View className="mb-5">
                 <Text className="mb-2 text-sm font-sansMedium text-text">
-                  Description (optional)
+                  Description
                 </Text>
                 <TextInput
                   value={description}
                   onChangeText={setDescription}
-                  placeholder="Add a short description..."
+                  placeholder="A brief description of the book"
                   className="h-32 rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text"
                   multiline
                   numberOfLines={6}

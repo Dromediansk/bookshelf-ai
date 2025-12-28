@@ -23,19 +23,15 @@ export const InsightsSection: FC<InsightsSectionProps> = ({ book }) => {
 
   const insightsCountLabel =
     sortedInsights.length === 1
-      ? "1 insight"
-      : `${sortedInsights.length} insights`;
+      ? "1 Insight"
+      : `${sortedInsights.length} Insights`;
 
   return (
     <View className="flex-1 border border-border bg-surface px-card py-card">
       <View className="flex-row items-center justify-between gap-3">
-        <Text className="text-sm font-sansMedium text-brand">My Insights</Text>
-
-        <View className="flex-row items-center gap-3">
-          <Text className="text-xs font-sans text-text-subtle">
-            {insightsCountLabel}
-          </Text>
-        </View>
+        <Text className="text-md font-sansMedium text-brand font-bold">
+          {insightsCountLabel}
+        </Text>
       </View>
 
       {!hasHydrated ? (

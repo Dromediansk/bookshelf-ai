@@ -42,9 +42,7 @@ const InsightForm: FC<InsightFormProps> = ({
       </View>
 
       <View className="mt-4">
-        <Text className="mb-2 text-sm font-sansMedium text-text">
-          Tags (optional)
-        </Text>
+        <Text className="mb-2 text-sm font-sansMedium text-text">Tags</Text>
         <TextInput
           value={draftTags}
           onChangeText={setDraftTags}

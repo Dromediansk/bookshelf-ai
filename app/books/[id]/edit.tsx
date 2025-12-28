@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { BookForm } from "@/components/BookForm";
 import { useBooksStore } from "@/store/booksStore";
+import themeColors from "@/utils/colors";
 
 type EditBookScreenParams = {
   id: string;
@@ -61,7 +62,11 @@ export const EditBookScreen = () => {
               accessibilityLabel="Delete book"
               hitSlop={10}
             >
-              <Ionicons name="trash-outline" size={22} />
+              <Ionicons
+                name="trash-outline"
+                size={22}
+                color={themeColors.danger.text}
+              />
             </Pressable>
           ),
         }}

@@ -16,7 +16,7 @@ const CreationDateField = ({
   return (
     <>
       <Text className="mb-2 text-sm font-sansMedium text-text">
-        Creation Date (optional)
+        Creation Date
       </Text>
       {Platform.OS === "ios" ? (
         <DateTimePicker

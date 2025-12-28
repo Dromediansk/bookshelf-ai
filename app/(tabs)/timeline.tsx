@@ -37,7 +37,7 @@ const buildTimelineEvents = (
   });
 
   const finishedBookEvents: TimelineEvent[] = books
-    .filter((book) => book.status === "read")
+    .filter((book) => book.status === "finished")
     .map((book) => ({
       id: `book:${book.id}`,
       type: "finished-book",
@@ -73,7 +73,7 @@ export const TimelineScreen = () => {
 
     const weeklyFinishedBooks = books.filter(
       (book) =>
-        book.status === "read" &&
+        book.status === "finished" &&
         isWithinLastNDays(book.updatedAt, LAST_N_DAYS, nowMs)
     );
 

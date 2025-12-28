@@ -41,6 +41,7 @@ export const RootLayout = () => {
             headerStyle: {
               backgroundColor: colors.brand.subtle,
             },
+            headerBackButtonDisplayMode: "minimal",
           }}
         >
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

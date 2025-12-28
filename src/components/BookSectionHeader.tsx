@@ -43,7 +43,7 @@ const BookSectionHeader = ({ section }: BookSectionHeaderProps) => {
   const style = styleByStatus[section.status];
 
   return (
-    <View className="pb-2 pt-4">
+    <View className="pb-2 pt-4 bg-gray-100">
       <View className="flex-row items-center">
         <View
           className={`rounded-full border px-3 py-1 ${style.pillBg} ${style.pillBorder}`}
