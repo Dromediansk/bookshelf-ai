@@ -93,7 +93,6 @@ export const EditBookScreen = () => {
           });
           router.back();
         }}
-        onCancel={() => router.back()}
       />
     </>
   );

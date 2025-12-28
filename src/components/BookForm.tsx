@@ -20,7 +20,6 @@ type BookFormProps = {
   submitLabel?: string;
   initialValues?: Partial<BookFormValues>;
   onSubmit: (values: BookFormValues) => void;
-  onCancel: () => void;
 };
 
 const STATUSES: { value: BookStatus; label: string }[] = [
@@ -33,7 +32,6 @@ export const BookForm = ({
   submitLabel = "Save",
   initialValues,
   onSubmit,
-  onCancel,
 }: BookFormProps) => {
   const [title, setTitle] = useState(initialValues?.title ?? "");
   const [author, setAuthor] = useState(initialValues?.author ?? "");
@@ -253,17 +251,6 @@ export const BookForm = ({
             }
           >
             {submitLabel}
-          </Text>
-        </Pressable>
-
-        <Pressable
-          onPress={onCancel}
-          className="mt-3 rounded-control border border-border bg-surface px-card py-button"
-          accessibilityRole="button"
-          accessibilityLabel="Cancel"
-        >
-          <Text className="text-center text-base font-sansSemibold text-text">
-            Cancel
           </Text>
         </Pressable>
       </View>

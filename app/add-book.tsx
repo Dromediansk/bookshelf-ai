@@ -27,13 +27,7 @@ export const AddBookScreen = () => {
     router.back();
   };
 
-  return (
-    <BookForm
-      submitLabel="Save"
-      onSubmit={handleSubmit}
-      onCancel={() => router.back()}
-    />
-  );
+  return <BookForm submitLabel="Save" onSubmit={handleSubmit} />;
 };
 
 export default AddBookScreen;

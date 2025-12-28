@@ -2,9 +2,12 @@ import { useBooksStore } from "@/store/booksStore";
 import { useInsightsStore } from "@/store/insightsStore";
 import { Book } from "@/types/book";
 import { toTime } from "@/utils/helpers";
+import { router } from "expo-router";
 import { FC } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 import BookInsight from "./BookInsight";
+import { Ionicons } from "@expo/vector-icons";
+import themeColors from "@/utils/colors";
 
 type InsightsSectionProps = {
   book: Book;
@@ -48,6 +51,41 @@ export const InsightsSection: FC<InsightsSectionProps> = ({ book }) => {
           <Text className="mt-2 text-sm font-sans text-text-muted">
             Your personal insights and ideas for this book will show up here.
           </Text>
+
+          <Pressable
+            onPress={() =>
+              router.push({
+                pathname: "/books/[id]/insights/new",
+                params: { id },
+              })
+            }
+            disabled={!hasHydrated}
+            hitSlop={10}
+            accessibilityRole="button"
+            accessibilityLabel="Add first insight"
+            className={
+              hasHydrated
+                ? "mt-4 self-center rounded-control bg-brand px-3 py-2"
+                : "mt-4 self-center rounded-control bg-surface px-3 py-2"
+            }
+          >
+            <View className="flex-row gap-2">
+              <Text
+                className={
+                  hasHydrated
+                    ? "text-center text-sm font-sansSemibold text-text-inverse"
+                    : "text-center text-sm font-sansSemibold text-text-subtle"
+                }
+              >
+                Add first insight
+              </Text>
+              <Ionicons
+                name="bulb"
+                size={16}
+                color={themeColors.text.inverse}
+              />
+            </View>
+          </Pressable>
         </View>
       ) : (
         <ScrollView

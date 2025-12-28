@@ -151,29 +151,31 @@ export const BookDetailScreen = () => {
         <InsightsSection book={book} />
 
         <View className="absolute bottom-4 left-0 right-4">
-          <Pressable
-            onPress={() =>
-              router.push({
-                pathname: "/books/[id]/insights/new",
-                params: { id },
-              })
-            }
-            disabled={!hasHydrated}
-            accessibilityRole="button"
-            accessibilityLabel="Add insight"
-            hitSlop={10}
-            className={
-              hasHydrated
-                ? "absolute bottom-6 right-6 rounded-full bg-brand p-3"
-                : "absolute bottom-6 right-6 rounded-full bg-surface-muted p-3"
-            }
-          >
-            <TailwindIonicons
-              name="bulb"
-              size={28}
-              color={themeColors.text.inverse}
-            />
-          </Pressable>
+          {book.insightIds.length > 0 && (
+            <Pressable
+              onPress={() =>
+                router.push({
+                  pathname: "/books/[id]/insights/new",
+                  params: { id },
+                })
+              }
+              disabled={!hasHydrated}
+              accessibilityRole="button"
+              accessibilityLabel="Add insight"
+              hitSlop={10}
+              className={
+                hasHydrated
+                  ? "absolute bottom-6 right-6 rounded-full bg-brand p-3"
+                  : "absolute bottom-6 right-6 rounded-full bg-surface-muted p-3"
+              }
+            >
+              <TailwindIonicons
+                name="bulb"
+                size={28}
+                color={themeColors.text.inverse}
+              />
+            </Pressable>
+          )}
         </View>
       </View>
     </View>
