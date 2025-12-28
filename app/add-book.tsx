@@ -18,7 +18,7 @@ export const AddBookScreen = () => {
       genre: values.genre,
       status: values.status,
       description: values.description.trim() || undefined,
-      createdAt: nowIso,
+      createdAt: values.createdAt || nowIso,
       updatedAt: nowIso,
       insightIds: [],
     };
