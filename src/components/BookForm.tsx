@@ -5,7 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { type BookGenre, type BookStatus } from "@/types/book";
 import themeColors from "@/utils/colors";
 import FormGenresSection from "./FormGenresSection";
-import CreationDateField from "./CreationDateField";
+import DateField from "./shared/DateField";
 
 export type BookFormValues = {
   title: string;
@@ -14,6 +14,7 @@ export type BookFormValues = {
   genre: BookGenre;
   status: BookStatus;
   createdAt?: string;
+  finishedAt?: string;
 };
 
 type BookFormProps = {
@@ -44,6 +45,9 @@ export const BookForm = ({
   const [createdAt, setCreatedAt] = useState<Date>(
     initialValues?.createdAt ? new Date(initialValues.createdAt) : new Date()
   );
+  const [finishedAt, setFinishedAt] = useState<Date>(
+    initialValues?.finishedAt ? new Date(initialValues.finishedAt) : new Date()
+  );
   const [status, setStatus] = useState<BookStatus>(
     initialValues?.status ?? "to-read"
   );
@@ -60,6 +64,11 @@ export const BookForm = ({
     setCreatedAt(
       initialValues?.createdAt ? new Date(initialValues.createdAt) : new Date()
     );
+    setFinishedAt(
+      initialValues?.finishedAt
+        ? new Date(initialValues.finishedAt)
+        : new Date()
+    );
     setStatus(initialValues?.status ?? "to-read");
   }, [
     initialValues?.title,
@@ -67,6 +76,7 @@ export const BookForm = ({
     initialValues?.description,
     initialValues?.genre,
     initialValues?.createdAt,
+    initialValues?.finishedAt,
     initialValues?.status,
   ]);
 
@@ -82,6 +92,7 @@ export const BookForm = ({
       genre,
       status,
       createdAt: createdAt.toISOString(),
+      finishedAt: finishedAt.toISOString(),
     });
   };
 
@@ -187,9 +198,10 @@ export const BookForm = ({
               </View>
 
               <View className="mb-6">
-                <CreationDateField
-                  createdAt={createdAt}
-                  setCreatedAt={setCreatedAt}
+                <DateField
+                  label="Creation Date"
+                  date={createdAt}
+                  setDate={setCreatedAt}
                 />
               </View>
 
@@ -226,6 +238,16 @@ export const BookForm = ({
                   })}
                 </View>
               </View>
+
+              {status === "finished" && (
+                <View className="mb-6">
+                  <DateField
+                    label="When did you finish the book?"
+                    date={finishedAt}
+                    setDate={setFinishedAt}
+                  />
+                </View>
+              )}
             </View>
           )}
         </View>

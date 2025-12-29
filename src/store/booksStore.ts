@@ -3,7 +3,6 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 import type { Book } from "@/types/book";
-import { MOCK_BOOKS } from "mocks/books";
 
 type BooksState = {
   books: Book[];
@@ -19,7 +18,7 @@ type BooksState = {
 export const useBooksStore = create<BooksState>()(
   persist(
     (set) => ({
-      books: MOCK_BOOKS,
+      books: [],
       hasHydrated: false,
 
       getBookById: (id: string): Book | undefined => {

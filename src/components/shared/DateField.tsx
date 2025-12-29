@@ -4,28 +4,24 @@ import DateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import themeColors from "@/utils/colors";
 
-type CreationDateFieldProps = {
-  createdAt: Date;
-  setCreatedAt: (date: Date) => void;
+type DateFieldProps = {
+  date: Date;
+  setDate: (date: Date) => void;
+  label: string;
 };
 
-const CreationDateField = ({
-  createdAt,
-  setCreatedAt,
-}: CreationDateFieldProps) => {
+const DateField = ({ date, setDate, label }: DateFieldProps) => {
   return (
     <>
-      <Text className="mb-2 text-sm font-sansMedium text-text">
-        Creation Date
-      </Text>
+      <Text className="mb-2 text-sm font-sansMedium text-text">{label}</Text>
       {Platform.OS === "ios" ? (
         <DateTimePicker
-          value={createdAt}
+          value={date}
           mode="date"
           display="compact"
           onChange={(event, selectedDate) => {
             if (selectedDate) {
-              setCreatedAt(selectedDate);
+              setDate(selectedDate);
             }
           }}
           maximumDate={new Date()}
@@ -35,11 +31,11 @@ const CreationDateField = ({
         <Pressable
           onPress={() => {
             DateTimePickerAndroid.open({
-              value: createdAt,
+              value: date,
               mode: "date",
               onChange: (event, selectedDate) => {
                 if (event.type === "set" && selectedDate) {
-                  setCreatedAt(selectedDate);
+                  setDate(selectedDate);
                 }
               },
               maximumDate: new Date(),
@@ -55,10 +51,10 @@ const CreationDateField = ({
           }}
           className="rounded-control border border-border bg-surface px-card py-field"
           accessibilityRole="button"
-          accessibilityLabel="Select creation date"
+          accessibilityLabel={`Select ${label.toLowerCase()}`}
         >
           <Text className="text-base font-sans text-text">
-            {createdAt.toLocaleDateString()}
+            {date.toLocaleDateString()}
           </Text>
         </Pressable>
       )}
@@ -66,4 +62,4 @@ const CreationDateField = ({
   );
 };
 
-export default CreationDateField;
+export default DateField;

@@ -12,6 +12,7 @@ export type Book = {
   status: BookStatus;
   createdAt: string;
   updatedAt: string;
+  finishedAt: string | null;
   description?: string;
   cover?: string;
   insightIds: string[];

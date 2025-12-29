@@ -4,7 +4,6 @@ import { createJSONStorage, persist } from "zustand/middleware";
 
 import { useBooksStore } from "@/store/booksStore";
 import type { Insight } from "@/types/insight";
-import { MOCK_INSIGHTS } from "mocks/insights";
 import { randomUUID } from "expo-crypto";
 
 type InsightInput = {
@@ -57,7 +56,7 @@ function normalizeTags(tags: string[] | string | undefined): string[] {
 export const useInsightsStore = create<InsightsState>()(
   persist(
     (set, get) => ({
-      insights: MOCK_INSIGHTS,
+      insights: [],
       hasHydrated: false,
 
       setInsights: (insights) => set({ insights }),

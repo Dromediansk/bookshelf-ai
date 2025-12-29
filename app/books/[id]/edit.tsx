@@ -50,6 +50,8 @@ export const EditBookScreen = () => {
     );
   }
 
+  console.log("Editing book:", book);
+
   return (
     <>
       <Stack.Screen
@@ -81,6 +83,7 @@ export const EditBookScreen = () => {
           status: book.status,
           description: book.description ?? "",
           createdAt: book.createdAt,
+          finishedAt: book.finishedAt ?? undefined,
         }}
         onSubmit={(values) => {
           updateBook(book.id, {
@@ -90,6 +93,7 @@ export const EditBookScreen = () => {
             status: values.status,
             description: values.description.trim() || undefined,
             createdAt: values.createdAt,
+            finishedAt: values.finishedAt,
           });
           router.back();
         }}

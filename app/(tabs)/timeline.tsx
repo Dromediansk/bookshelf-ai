@@ -74,7 +74,8 @@ export const TimelineScreen = () => {
     const weeklyFinishedBooks = books.filter(
       (book) =>
         book.status === "finished" &&
-        isWithinLastNDays(book.updatedAt, LAST_N_DAYS, nowMs)
+        book.finishedAt &&
+        isWithinLastNDays(book.finishedAt, LAST_N_DAYS, nowMs)
     );
 
     const lastWeeklyInsight = sortByDateDesc(
