@@ -71,7 +71,7 @@ export const BookDetailScreen = () => {
             >
               <Text
                 numberOfLines={1}
-                className="text-xl font-sansSemibold text-text"
+                className="text-xl font-sansSemibold text-text text-start"
                 style={{ flexShrink: 1 }}
               >
                 {title}
