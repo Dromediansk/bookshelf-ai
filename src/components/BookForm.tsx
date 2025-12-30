@@ -130,7 +130,7 @@ export const BookForm = ({
                 <TextInput
                   value={title}
                   onChangeText={setTitle}
-                  placeholder="e.g. Dune"
+                  placeholder="Harry Potter and the Sorcerer's Stone"
                   className="rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text"
                   autoCapitalize="words"
                   returnKeyType="done"
@@ -144,7 +144,7 @@ export const BookForm = ({
                 <TextInput
                   value={author}
                   onChangeText={setAuthor}
-                  placeholder="e.g. Frank Herbert"
+                  placeholder="J.K. Rowling"
                   className="rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text"
                   autoCapitalize="words"
                 />
@@ -189,7 +189,7 @@ export const BookForm = ({
                 <TextInput
                   value={description}
                   onChangeText={setDescription}
-                  placeholder="A brief description of the book"
+                  placeholder="The story of a young wizard, Harry Potter, who discovers he's a wizard and attends Hogwarts School of Witchcraft and Wizardry..."
                   className="h-32 rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text"
                   multiline
                   numberOfLines={6}

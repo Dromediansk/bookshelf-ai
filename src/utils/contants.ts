@@ -25,7 +25,7 @@ export const BOOK_GENRES = [
   "Fiction",
   "Poetry",
   "Classic",
-  "Graphic Novel",
+  "Novel",
   "Religion",
   "Philosophy",
   "Science",

@@ -61,7 +61,7 @@ export const LibraryScreen = () => {
                 No books yet
               </Text>
               <Text className="mt-2 text-sm font-sans text-text-muted">
-                Add your first book to start tracking.
+                Add your first book to get started.
               </Text>
             </View>
           )}
@@ -77,11 +77,7 @@ export const LibraryScreen = () => {
             accessibilityLabel="Add a new insight"
           >
             <View className="flex-row items-center justify-center gap-2">
-              <Ionicons
-                name="bulb"
-                size={18}
-                color={colors.text.inverse}
-              />
+              <Ionicons name="bulb" size={18} color={colors.text.inverse} />
               <Text className="text-center text-base font-sansSemibold text-text-inverse">
                 New insight
               </Text>
