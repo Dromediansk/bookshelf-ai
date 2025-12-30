@@ -40,7 +40,7 @@ const buildTimelineEvents = (
     .map((book) => ({
       id: `book:${book.id}`,
       type: "finished-book",
-      createdAt: book.updatedAt,
+      createdAt: book.finishedAt ?? book.updatedAt,
       bookTitle: book.title,
     }));
 
