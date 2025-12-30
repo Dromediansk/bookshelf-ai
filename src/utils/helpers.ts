@@ -90,7 +90,7 @@ export const formatCreatedAt = (
  *   Example: `toValidTime(x) ?? Number.POSITIVE_INFINITY` to push missing dates to the end for ASC,
  *   or `?? Number.NEGATIVE_INFINITY` to push missing dates to the end for DESC.
  */
-const toValidTime = (value: string | undefined): number | null => {
+const toValidTime = (value: string | undefined | null): number | null => {
   if (!value) return null;
   const parsed = dayjs(value);
   if (!parsed.isValid()) return null;
@@ -121,6 +121,18 @@ export const sortBooksForList = (books: readonly Book[]): Book[] => {
       const aTime = toValidTime(a.createdAt) ?? Number.POSITIVE_INFINITY;
       const bTime = toValidTime(b.createdAt) ?? Number.POSITIVE_INFINITY;
       return aTime - bTime;
+    }
+
+    if (a.status === "finished") {
+      const aTime =
+        toValidTime(a.finishedAt) ??
+        toValidTime(a.updatedAt) ??
+        Number.NEGATIVE_INFINITY;
+      const bTime =
+        toValidTime(b.finishedAt) ??
+        toValidTime(b.updatedAt) ??
+        Number.NEGATIVE_INFINITY;
+      return bTime - aTime;
     }
 
     const aTime = toValidTime(a.updatedAt) ?? Number.NEGATIVE_INFINITY;
