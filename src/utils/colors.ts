@@ -14,6 +14,7 @@ const themeColors = {
     DEFAULT: colors.slate[900],
     muted: colors.slate[600],
     subtle: colors.slate[500],
+    placeholder: colors.slate[400],
     inverse: colors.white,
   },
   border: {

@@ -1,6 +1,7 @@
 import { InsightMode } from "@/types/insight";
 import { FC } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
+import themeColors from "@/utils/colors";
 
 type InsightFormProps = {
   insightMode: InsightMode;
@@ -34,6 +35,7 @@ const InsightForm: FC<InsightFormProps> = ({
           value={draftContent}
           onChangeText={setDraftContent}
           placeholder="Write an idea you want to remember…"
+          placeholderTextColor={themeColors.text.placeholder}
           className="rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text h-32"
           multiline
           textAlignVertical="top"
@@ -47,6 +49,7 @@ const InsightForm: FC<InsightFormProps> = ({
           value={draftTags}
           onChangeText={setDraftTags}
           placeholder="e.g. inspiring, focus, habits"
+          placeholderTextColor={themeColors.text.placeholder}
           className="rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text"
           autoCapitalize="none"
         />

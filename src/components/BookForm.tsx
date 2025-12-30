@@ -131,6 +131,7 @@ export const BookForm = ({
                   value={title}
                   onChangeText={setTitle}
                   placeholder="Harry Potter and the Sorcerer's Stone"
+                  placeholderTextColor={themeColors.text.placeholder}
                   className="rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text"
                   autoCapitalize="words"
                   returnKeyType="done"
@@ -145,6 +146,7 @@ export const BookForm = ({
                   value={author}
                   onChangeText={setAuthor}
                   placeholder="J.K. Rowling"
+                  placeholderTextColor={themeColors.text.placeholder}
                   className="rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text"
                   autoCapitalize="words"
                 />
@@ -190,6 +192,7 @@ export const BookForm = ({
                   value={description}
                   onChangeText={setDescription}
                   placeholder="The story of a young wizard, Harry Potter, who discovers he's a wizard and attends Hogwarts School of Witchcraft and Wizardry..."
+                  placeholderTextColor={themeColors.text.placeholder}
                   className="h-32 rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text"
                   multiline
                   numberOfLines={6}

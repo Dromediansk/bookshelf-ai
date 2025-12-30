@@ -10,7 +10,7 @@ type FormGenresSectionProps = {
 
 const GENRES: { value: BookGenre; label: string }[] = BOOK_GENRES.map((g) => ({
   value: g,
-  label: g === "Unknown" ? "Not set" : g,
+  label: g,
 }));
 
 const FormGenresSection = ({ genre, setGenre }: FormGenresSectionProps) => {
