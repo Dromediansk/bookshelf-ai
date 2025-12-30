@@ -10,7 +10,7 @@ import {
   Montserrat_600SemiBold,
   Montserrat_700Bold,
 } from "@expo-google-fonts/montserrat";
-import colors from "@/utils/colors";
+import { DEFAULT_HEADER_OPTIONS } from "@/utils/navigation";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -35,12 +35,7 @@ export const RootLayout = () => {
         <StatusBar style="dark" />
         <Stack
           screenOptions={{
-            headerTitleStyle: {
-              fontFamily: "Montserrat_600SemiBold",
-            },
-            headerStyle: {
-              backgroundColor: colors.brand.subtle,
-            },
+            ...DEFAULT_HEADER_OPTIONS,
             headerBackButtonDisplayMode: "minimal",
           }}
         >
@@ -56,6 +51,10 @@ export const RootLayout = () => {
           <Stack.Screen
             name="books/[id]/insights/new"
             options={{ presentation: "modal" }}
+          />
+          <Stack.Screen
+            name="insights/new"
+            options={{ title: "New Insight", presentation: "modal" }}
           />
           <Stack.Screen
             name="books/[id]/insights/[insightId]/edit"

@@ -10,6 +10,7 @@ import { AboutBookModal } from "@/components/AboutBookModal";
 import { useState } from "react";
 import { formatCreatedAt } from "@/utils/helpers";
 import themeColors from "@/utils/colors";
+import { HeaderTitle } from "@/components/shared/HeaderTitle";
 
 type BookDetailScreenParams = {
   id: string;
@@ -62,23 +63,13 @@ export const BookDetailScreen = () => {
       <Stack.Screen
         options={{
           headerTitle: () => (
-            <Pressable
+            <HeaderTitle
+              title={title}
               onPress={openAbout}
-              accessibilityRole="button"
               accessibilityLabel="Open about book"
-              hitSlop={10}
-              style={{ flexShrink: 1 }}
-            >
-              <Text
-                numberOfLines={1}
-                className="text-xl font-sansSemibold text-text text-start"
-                style={{ flexShrink: 1 }}
-              >
-                {title}
-              </Text>
-            </Pressable>
+            />
           ),
-          headerRight: () => (
+          headerRight: ({ tintColor }) => (
             <Pressable
               onPress={() =>
                 router.push({
@@ -90,7 +81,7 @@ export const BookDetailScreen = () => {
               accessibilityLabel="Edit book"
               hitSlop={10}
             >
-              <Ionicons name="create-outline" size={22} />
+              <Ionicons name="create-outline" size={22} color={tintColor} />
             </Pressable>
           ),
         }}

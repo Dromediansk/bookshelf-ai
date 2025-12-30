@@ -7,7 +7,7 @@ import { useBooksStore } from "@/store/booksStore";
 import { sortBooksForList } from "@/utils/helpers";
 import type { Book, BookStatus } from "@/types/book";
 import BookSectionHeader from "@/components/BookSectionHeader";
-import themeColors from "@/utils/colors";
+import colors from "@/utils/colors";
 
 type BookSection = {
   status: BookStatus;
@@ -68,17 +68,27 @@ export const LibraryScreen = () => {
         />
       )}
 
-      <View className="absolute bottom-6 left-0 right-6 items-end">
-        <Pressable
-          onPress={() => router.push("/add-book")}
-          className="h-14 w-14 items-center justify-center rounded-full bg-brand"
-          accessibilityRole="button"
-          accessibilityLabel="Add a new book"
-          hitSlop={10}
-        >
-          <Ionicons name="add" size={28} color={themeColors.text.inverse} />
-        </Pressable>
-      </View>
+      {hasHydrated && books.length > 0 ? (
+        <View className="absolute bottom-6 left-0 right-0 px-4">
+          <Pressable
+            onPress={() => router.push("/insights/new")}
+            className="rounded-control bg-brand px-card py-button"
+            accessibilityRole="button"
+            accessibilityLabel="Add a new insight"
+          >
+            <View className="flex-row items-center justify-center gap-2">
+              <Ionicons
+                name="bulb"
+                size={18}
+                color={colors.text.inverse}
+              />
+              <Text className="text-center text-base font-sansSemibold text-text-inverse">
+                New insight
+              </Text>
+            </View>
+          </Pressable>
+        </View>
+      ) : null}
     </View>
   );
 };

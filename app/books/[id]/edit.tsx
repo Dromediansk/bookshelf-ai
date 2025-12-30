@@ -54,7 +54,7 @@ export const EditBookScreen = () => {
     <>
       <Stack.Screen
         options={{
-          title: `Editing "${book.title}"`,
+          title: book.title,
           headerRight: () => (
             <Pressable
               onPress={onDelete}
