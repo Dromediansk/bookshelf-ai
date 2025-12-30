@@ -92,7 +92,7 @@ export const BookForm = ({
       genre,
       status,
       createdAt: createdAt.toISOString(),
-      finishedAt: finishedAt.toISOString(),
+      finishedAt: status === "finished" ? finishedAt.toISOString() : undefined,
     });
   };
 

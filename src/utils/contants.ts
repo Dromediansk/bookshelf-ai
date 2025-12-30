@@ -42,3 +42,5 @@ export const BOOK_GENRES = [
 ];
 
 export const BOOK_STATUSES = ["to-read", "reading", "finished"];
+
+export const LAST_N_DAYS = 7;

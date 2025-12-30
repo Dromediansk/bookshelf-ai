@@ -8,7 +8,7 @@ import { useBooksStore } from "@/store/booksStore";
 import { InsightsSection } from "@/components/InsightsSection";
 import { AboutBookModal } from "@/components/AboutBookModal";
 import { useState } from "react";
-import { formatCreatedAt } from "@/utils/helpers";
+import { getBookDateLabelByPriority } from "@/utils/helpers";
 import themeColors from "@/utils/colors";
 import { HeaderTitle } from "@/components/shared/HeaderTitle";
 
@@ -54,9 +54,9 @@ export const BookDetailScreen = () => {
     );
   }
 
-  const { id, title, author, genre, status, description, createdAt } = book;
+  const { id, title, author, genre, status, description } = book;
 
-  const createdAtLabel = formatCreatedAt(createdAt);
+  const dateLabel = getBookDateLabelByPriority(book);
 
   return (
     <View className="flex-1 bg-surface-muted ">
@@ -125,7 +125,7 @@ export const BookDetailScreen = () => {
 
             <View className="items-end">
               <Text className="text-sm font-sans text-text-muted">
-                Created: {createdAtLabel}
+                {dateLabel.label}: {dateLabel.value}
               </Text>
             </View>
           </View>

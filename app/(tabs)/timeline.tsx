@@ -10,6 +10,7 @@ import {
   isWithinLastNDays,
   sortByDateDesc,
 } from "@/utils/helpers";
+import { LAST_N_DAYS } from "@/utils/contants";
 
 type TimelineEvent = {
   id: string;
@@ -17,8 +18,6 @@ type TimelineEvent = {
   createdAt: string;
   bookTitle: string;
 };
-
-const LAST_N_DAYS = 7;
 
 const buildTimelineEvents = (
   books: Book[],

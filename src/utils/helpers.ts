@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
 import type { Book } from "@/types/book";
-import { BOOK_STATUS_PRIORITY } from "./contants";
+import { BOOK_STATUS_PRIORITY, LAST_N_DAYS } from "./contants";
 
 dayjs.extend(relativeTime);
 
@@ -62,7 +62,7 @@ export const formatRelativeTime = (
   return target.from(now);
 };
 
-export const formatCreatedAt = (
+export const formatDate = (
   createdAt: string | undefined,
   nowMs: number = Date.now()
 ) => {
@@ -71,7 +71,7 @@ export const formatCreatedAt = (
   const created = dayjs(createdAt);
   if (!created.isValid()) return "";
 
-  if (isWithinLastNDays(createdAt, 3, nowMs)) {
+  if (isWithinLastNDays(createdAt, LAST_N_DAYS, nowMs)) {
     return formatRelativeTime(createdAt, nowMs);
   }
 
@@ -139,4 +139,25 @@ export const sortBooksForList = (books: readonly Book[]): Book[] => {
     const bTime = toValidTime(b.updatedAt) ?? Number.NEGATIVE_INFINITY;
     return bTime - aTime;
   });
+};
+
+export const getBookDateLabelByPriority = (book: Book) => {
+  if (book.finishedAt) {
+    return {
+      label: "Finished",
+      value: formatDate(book.finishedAt),
+    };
+  }
+
+  if (book.updatedAt) {
+    return {
+      label: "Updated",
+      value: formatDate(book.updatedAt),
+    };
+  }
+
+  return {
+    label: "Created",
+    value: formatDate(book.createdAt),
+  };
 };
