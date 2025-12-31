@@ -177,9 +177,7 @@ export const TimelineScreen = () => {
 
           const description =
             item.type === "insight"
-              ? item.bookTitle
-                ? `You wrote a insight • ${item.bookTitle}`
-                : "You wrote a insight"
+              ? `You wrote an insight • ${item.bookTitle}`
               : `You finished a book • ${item.bookTitle}`;
 
           return (
