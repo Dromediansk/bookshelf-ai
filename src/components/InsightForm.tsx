@@ -36,7 +36,7 @@ const InsightForm: FC<InsightFormProps> = ({
           onChangeText={setDraftContent}
           placeholder="Write an idea you want to remember…"
           placeholderTextColor={themeColors.text.placeholder}
-          className="rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text h-32"
+          className="rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text h-48"
           multiline
           textAlignVertical="top"
           autoFocus
