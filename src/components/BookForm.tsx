@@ -135,6 +135,7 @@ export const BookForm = ({
                   className="rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text"
                   autoCapitalize="words"
                   returnKeyType="done"
+                  autoFocus
                 />
               </View>
 
