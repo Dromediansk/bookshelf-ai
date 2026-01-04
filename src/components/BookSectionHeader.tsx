@@ -1,4 +1,5 @@
 import { BookStatus } from "@/types/book";
+import { DefaultTheme } from "@react-navigation/native";
 import { Text, View } from "react-native";
 
 const labelByStatus: Record<BookStatus, string> = {
@@ -43,7 +44,10 @@ const BookSectionHeader = ({ section }: BookSectionHeaderProps) => {
   const style = styleByStatus[section.status];
 
   return (
-    <View className="pb-2 pt-4 bg-gray-100">
+    <View
+      className="pb-2 pt-4"
+      style={{ backgroundColor: DefaultTheme.colors.background }}
+    >
       <View className="flex-row items-center">
         <View
           className={`rounded-full border px-3 py-1 ${style.pillBg} ${style.pillBorder}`}
