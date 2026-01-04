@@ -1,5 +1,6 @@
 import { useMemo } from "react";
-import { FlatList, Text, View } from "react-native";
+import { FlatList, Pressable, Text, View } from "react-native";
+import { router } from "expo-router";
 
 import { useBooksStore } from "@/store/booksStore";
 import { useInsightsStore } from "@/store/insightsStore";
@@ -16,6 +17,7 @@ type TimelineEvent = {
   id: string;
   type: "insight" | "finished-book";
   createdAt: string;
+  bookId: string;
   bookTitle: string;
 };
 
@@ -27,11 +29,13 @@ const buildTimelineEvents = (
 
   const insightEvents: TimelineEvent[] = insights.map((insight) => {
     const book = bookById.get(insight.bookId);
+
     return {
       id: `insight:${insight.id}`,
       type: "insight",
       createdAt: insight.createdAt,
-      bookTitle: book ? book.title : "Unknown book",
+      bookId: insight.bookId,
+      bookTitle: book?.title ?? "Unknown Book",
     };
   });
 
@@ -41,6 +45,7 @@ const buildTimelineEvents = (
       id: `book:${book.id}`,
       type: "finished-book",
       createdAt: book.finishedAt ?? book.updatedAt,
+      bookId: book.id,
       bookTitle: book.title,
     }));
 
@@ -181,7 +186,17 @@ export const TimelineScreen = () => {
               : `You finished a book • ${item.bookTitle}`;
 
           return (
-            <View className="rounded-card border border-border bg-surface px-card py-card">
+            <Pressable
+              className="rounded-card border border-border bg-surface px-card py-card"
+              onPress={() =>
+                router.push({
+                  pathname: "/books/[id]",
+                  params: { id: item.bookId },
+                })
+              }
+              accessibilityRole="button"
+              accessibilityLabel={`Open ${item.bookTitle}`}
+            >
               <Text className="text-sm font-sansSemibold text-text">
                 {description}
               </Text>
@@ -190,7 +205,7 @@ export const TimelineScreen = () => {
                   {relative}
                 </Text>
               )}
-            </View>
+            </Pressable>
           );
         }}
         ListEmptyComponent={() => {
