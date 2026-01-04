@@ -39,9 +39,9 @@ const EditInsightModal = () => {
     didInitDraft.current = true;
   }, [hasHydrated, insightMatchesBook, insight]);
 
-  const canSaveInsight = useMemo(
-    () => hasHydrated && draftContent.trim().length > 0,
-    [draftContent, hasHydrated]
+  const isFormReady = useMemo(
+    () => hasHydrated && insightMatchesBook,
+    [hasHydrated, insightMatchesBook]
   );
 
   if (!bookId || !book) {
@@ -120,7 +120,7 @@ const EditInsightModal = () => {
   }
 
   function submitInsight() {
-    if (!canSaveInsight) return;
+    if (!isFormReady) return;
     updateInsight(bookId, insightId, {
       content: draftContent,
       tags: draftTags,
@@ -134,11 +134,11 @@ const EditInsightModal = () => {
       <View className="flex-1">
         <InsightForm
           insightMode="edit"
+          isReady={isFormReady}
           draftContent={draftContent}
           setDraftContent={setDraftContent}
           draftTags={draftTags}
           setDraftTags={setDraftTags}
-          canSaveInsight={canSaveInsight}
           submitInsight={submitInsight}
           resetDraft={() => router.back()}
         />

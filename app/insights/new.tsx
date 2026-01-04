@@ -36,14 +36,13 @@ const NewInsightModal = () => {
 
   const effectiveSelectedBookId = selectedBookId ?? defaultBookId;
 
-  const canSaveInsight = useMemo(() => {
+  const isFormReady = useMemo(() => {
     return (
       hasHydrated &&
       !!effectiveSelectedBookId &&
-      draftContent.trim().length > 0 &&
       sortedBooks.some((b) => b.id === effectiveSelectedBookId)
     );
-  }, [draftContent, effectiveSelectedBookId, hasHydrated, sortedBooks]);
+  }, [effectiveSelectedBookId, hasHydrated, sortedBooks]);
 
   if (!hasHydrated) {
     return (
@@ -96,7 +95,7 @@ const NewInsightModal = () => {
   }
 
   const submitInsight = () => {
-    if (!canSaveInsight || !effectiveSelectedBookId) return;
+    if (!isFormReady || !effectiveSelectedBookId) return;
 
     addInsight(effectiveSelectedBookId, {
       content: draftContent,
@@ -148,11 +147,11 @@ const NewInsightModal = () => {
       <View className="flex-1">
         <InsightForm
           insightMode="add"
+          isReady={isFormReady}
           draftContent={draftContent}
           setDraftContent={setDraftContent}
           draftTags={draftTags}
           setDraftTags={setDraftTags}
-          canSaveInsight={canSaveInsight}
           submitInsight={submitInsight}
           resetDraft={() => router.back()}
         />

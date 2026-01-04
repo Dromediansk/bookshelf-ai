@@ -44,3 +44,10 @@ export const BOOK_GENRES = [
 export const BOOK_STATUSES = ["to-read", "reading", "finished"];
 
 export const LAST_N_DAYS = 7;
+
+export const MAX_BOOK_TITLE_CHARS = 120;
+export const MAX_BOOK_AUTHOR_CHARS = 80;
+export const MAX_BOOK_DESCRIPTION_CHARS = 2000;
+
+export const MAX_INSIGHT_CONTENT_CHARS = 3000;
+export const MAX_INSIGHT_TAGS_CHARS = 200;

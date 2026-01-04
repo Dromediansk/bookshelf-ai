@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 
@@ -21,11 +21,6 @@ const NewInsightModal = () => {
 
   const [draftContent, setDraftContent] = useState("");
   const [draftTags, setDraftTags] = useState("");
-
-  const canSaveInsight = useMemo(
-    () => hasHydrated && draftContent.trim().length > 0,
-    [draftContent, hasHydrated]
-  );
 
   if (!bookId || !book) {
     return (
@@ -78,7 +73,7 @@ const NewInsightModal = () => {
   }
 
   function submitInsight() {
-    if (!canSaveInsight) return;
+    if (!hasHydrated) return;
     addInsight(bookId, { content: draftContent, tags: draftTags });
     router.back();
   }
@@ -89,11 +84,11 @@ const NewInsightModal = () => {
       <View className="flex-1">
         <InsightForm
           insightMode="add"
+          isReady={hasHydrated}
           draftContent={draftContent}
           setDraftContent={setDraftContent}
           draftTags={draftTags}
           setDraftTags={setDraftTags}
-          canSaveInsight={canSaveInsight}
           submitInsight={submitInsight}
           resetDraft={() => router.back()}
         />

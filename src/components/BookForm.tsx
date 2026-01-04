@@ -4,8 +4,14 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { type BookGenre, type BookStatus } from "@/types/book";
 import themeColors from "@/utils/colors";
+import {
+  MAX_BOOK_AUTHOR_CHARS,
+  MAX_BOOK_DESCRIPTION_CHARS,
+  MAX_BOOK_TITLE_CHARS,
+} from "@/utils/contants";
 import FormGenresSection from "./FormGenresSection";
 import DateField from "./shared/DateField";
+import CharacterCountHint from "./shared/CharacterCountHint";
 
 export type BookFormValues = {
   title: string;
@@ -80,7 +86,14 @@ export const BookForm = ({
     initialValues?.status,
   ]);
 
-  const canSave = useMemo(() => title.trim().length > 0, [title]);
+  const canSave = useMemo(() => {
+    return (
+      title.trim().length > 0 &&
+      title.length <= MAX_BOOK_TITLE_CHARS &&
+      author.length <= MAX_BOOK_AUTHOR_CHARS &&
+      description.length <= MAX_BOOK_DESCRIPTION_CHARS
+    );
+  }, [author, description, title]);
 
   const handleSubmit = () => {
     if (!canSave) return;
@@ -136,6 +149,11 @@ export const BookForm = ({
                   autoCapitalize="words"
                   returnKeyType="done"
                   autoFocus
+                  maxLength={MAX_BOOK_TITLE_CHARS}
+                />
+                <CharacterCountHint
+                  current={title.length}
+                  max={MAX_BOOK_TITLE_CHARS}
                 />
               </View>
 
@@ -150,6 +168,11 @@ export const BookForm = ({
                   placeholderTextColor={themeColors.text.placeholder}
                   className="rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text"
                   autoCapitalize="words"
+                  maxLength={MAX_BOOK_AUTHOR_CHARS}
+                />
+                <CharacterCountHint
+                  current={author.length}
+                  max={MAX_BOOK_AUTHOR_CHARS}
                 />
               </View>
 
@@ -198,6 +221,11 @@ export const BookForm = ({
                   multiline
                   numberOfLines={6}
                   textAlignVertical="top"
+                  maxLength={MAX_BOOK_DESCRIPTION_CHARS}
+                />
+                <CharacterCountHint
+                  current={description.length}
+                  max={MAX_BOOK_DESCRIPTION_CHARS}
                 />
               </View>
 

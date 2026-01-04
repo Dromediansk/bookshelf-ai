@@ -2,28 +2,39 @@ import { InsightMode } from "@/types/insight";
 import { FC } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
 import themeColors from "@/utils/colors";
+import {
+  MAX_INSIGHT_CONTENT_CHARS,
+  MAX_INSIGHT_TAGS_CHARS,
+} from "@/utils/contants";
+import CharacterCountHint from "@/components/shared/CharacterCountHint";
 
 type InsightFormProps = {
   insightMode: InsightMode;
+  isReady?: boolean;
   draftContent: string;
   setDraftContent: (value: string) => void;
   draftTags: string;
   setDraftTags: (value: string) => void;
-  canSaveInsight: boolean;
   submitInsight: () => void;
   resetDraft: () => void;
 };
 
 const InsightForm: FC<InsightFormProps> = ({
   insightMode,
+  isReady = true,
   draftContent,
   setDraftContent,
   draftTags,
   setDraftTags,
-  canSaveInsight,
   submitInsight,
   resetDraft,
 }) => {
+  const canSubmit =
+    isReady &&
+    draftContent.trim().length > 0 &&
+    draftContent.length <= MAX_INSIGHT_CONTENT_CHARS &&
+    draftTags.length <= MAX_INSIGHT_TAGS_CHARS;
+
   return (
     <View className="border border-border bg-surface-muted px-card py-card">
       <Text className="text-sm font-sansSemibold text-brand">
@@ -40,6 +51,11 @@ const InsightForm: FC<InsightFormProps> = ({
           multiline
           textAlignVertical="top"
           autoFocus
+          maxLength={MAX_INSIGHT_CONTENT_CHARS}
+        />
+        <CharacterCountHint
+          current={draftContent.length}
+          max={MAX_INSIGHT_CONTENT_CHARS}
         />
       </View>
 
@@ -52,6 +68,11 @@ const InsightForm: FC<InsightFormProps> = ({
           placeholderTextColor={themeColors.text.placeholder}
           className="rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text"
           autoCapitalize="none"
+          maxLength={MAX_INSIGHT_TAGS_CHARS}
+        />
+        <CharacterCountHint
+          current={draftTags.length}
+          max={MAX_INSIGHT_TAGS_CHARS}
         />
         <Text className="mt-2 text-xs font-sans text-text-subtle">
           Separate tags with commas.
@@ -60,10 +81,13 @@ const InsightForm: FC<InsightFormProps> = ({
 
       <View className="mt-5">
         <Pressable
-          onPress={submitInsight}
-          disabled={!canSaveInsight}
+          onPress={() => {
+            if (!canSubmit) return;
+            submitInsight();
+          }}
+          disabled={!canSubmit}
           className={
-            canSaveInsight
+            canSubmit
               ? "rounded-control bg-brand px-card py-button"
               : "rounded-control bg-surface px-card py-button"
           }
@@ -74,7 +98,7 @@ const InsightForm: FC<InsightFormProps> = ({
         >
           <Text
             className={
-              canSaveInsight
+              canSubmit
                 ? "text-center text-base font-sansSemibold text-text-inverse"
                 : "text-center text-base font-sansSemibold text-text-subtle"
             }
