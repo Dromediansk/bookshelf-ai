@@ -1,7 +1,14 @@
 import { InsightMode } from "@/types/insight";
 import { FC, ReactNode } from "react";
-import { Pressable, Text, TextInput, View } from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import themeColors from "@/utils/colors";
 import {
   MAX_INSIGHT_CONTENT_CHARS,
@@ -39,98 +46,103 @@ const InsightForm: FC<InsightFormProps> = ({
     draftTags.length <= MAX_INSIGHT_TAGS_CHARS;
 
   return (
-    <KeyboardAwareScrollView
-      contentContainerStyle={{ flexGrow: 1 }}
-      enableOnAndroid={true}
-      extraScrollHeight={20}
-      keyboardShouldPersistTaps="handled"
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={120}
     >
-      {bookPicker}
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: 24 }}
+        keyboardShouldPersistTaps="handled"
+        className="border border-border bg-surface-muted px-card py-card"
+      >
+        {bookPicker}
 
-      <View className="border border-border bg-surface-muted px-card py-card">
-        <Text className="text-sm font-sansSemibold text-brand">
-          {insightMode === "add" ? "New insight" : "Edit insight"}
-        </Text>
-
-        <View className="mt-4">
-          <TextInput
-            value={draftContent}
-            onChangeText={setDraftContent}
-            placeholder="Write an idea you want to remember…"
-            placeholderTextColor={themeColors.text.placeholder}
-            className="rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text h-48"
-            multiline
-            textAlignVertical="top"
-            autoFocus
-            maxLength={MAX_INSIGHT_CONTENT_CHARS}
-          />
-          <CharacterCountHint
-            current={draftContent.length}
-            max={MAX_INSIGHT_CONTENT_CHARS}
-          />
-        </View>
-
-        <View className="mt-4">
-          <Text className="mb-2 text-sm font-sansMedium text-text">Tags</Text>
-          <TextInput
-            value={draftTags}
-            onChangeText={setDraftTags}
-            placeholder="e.g. inspiring, focus, habits"
-            placeholderTextColor={themeColors.text.placeholder}
-            className="rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text"
-            autoCapitalize="none"
-            maxLength={MAX_INSIGHT_TAGS_CHARS}
-          />
-          <CharacterCountHint
-            current={draftTags.length}
-            max={MAX_INSIGHT_TAGS_CHARS}
-          />
-          <Text className="mt-2 text-xs font-sans text-text-subtle">
-            Separate tags with commas.
+        <View>
+          <Text className="text-sm font-sansSemibold text-brand">
+            {insightMode === "add" ? "New insight" : "Edit insight"}
           </Text>
-        </View>
 
-        <View className="mt-5">
-          <Pressable
-            onPress={() => {
-              if (!canSubmit) return;
-              submitInsight();
-            }}
-            disabled={!canSubmit}
-            className={
-              canSubmit
-                ? "rounded-control bg-brand px-card py-button"
-                : "rounded-control bg-surface px-card py-button"
-            }
-            accessibilityRole="button"
-            accessibilityLabel={
-              insightMode === "add" ? "Add insight" : "Save insight changes"
-            }
-          >
-            <Text
+          <View className="mt-4">
+            <TextInput
+              value={draftContent}
+              onChangeText={setDraftContent}
+              placeholder="Write an idea you want to remember…"
+              placeholderTextColor={themeColors.text.placeholder}
+              className="rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text h-48"
+              multiline
+              textAlignVertical="top"
+              autoFocus
+              maxLength={MAX_INSIGHT_CONTENT_CHARS}
+            />
+            <CharacterCountHint
+              current={draftContent.length}
+              max={MAX_INSIGHT_CONTENT_CHARS}
+            />
+          </View>
+
+          <View className="mt-4">
+            <Text className="mb-2 text-sm font-sansMedium text-text">Tags</Text>
+            <TextInput
+              value={draftTags}
+              onChangeText={setDraftTags}
+              placeholder="e.g. inspiring, focus, habits"
+              placeholderTextColor={themeColors.text.placeholder}
+              className="rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text"
+              autoCapitalize="none"
+              maxLength={MAX_INSIGHT_TAGS_CHARS}
+            />
+            <CharacterCountHint
+              current={draftTags.length}
+              max={MAX_INSIGHT_TAGS_CHARS}
+            />
+            <Text className="mt-2 text-xs font-sans text-text-subtle">
+              Separate tags with commas.
+            </Text>
+          </View>
+
+          <View className="mt-5">
+            <Pressable
+              onPress={() => {
+                if (!canSubmit) return;
+                submitInsight();
+              }}
+              disabled={!canSubmit}
               className={
                 canSubmit
-                  ? "text-center text-base font-sansSemibold text-text-inverse"
-                  : "text-center text-base font-sansSemibold text-text-subtle"
+                  ? "rounded-control bg-brand px-card py-button"
+                  : "rounded-control bg-surface px-card py-button"
+              }
+              accessibilityRole="button"
+              accessibilityLabel={
+                insightMode === "add" ? "Add insight" : "Save insight changes"
               }
             >
-              {insightMode === "add" ? "Add insight" : "Save"}
-            </Text>
-          </Pressable>
+              <Text
+                className={
+                  canSubmit
+                    ? "text-center text-base font-sansSemibold text-text-inverse"
+                    : "text-center text-base font-sansSemibold text-text-subtle"
+                }
+              >
+                {insightMode === "add" ? "Add insight" : "Save"}
+              </Text>
+            </Pressable>
 
-          <Pressable
-            onPress={resetDraft}
-            className="mt-3 rounded-control border border-border bg-surface px-card py-button"
-            accessibilityRole="button"
-            accessibilityLabel="Cancel insight"
-          >
-            <Text className="text-center text-base font-sansSemibold text-text">
-              Cancel
-            </Text>
-          </Pressable>
+            <Pressable
+              onPress={resetDraft}
+              className="mt-3 rounded-control border border-border bg-surface px-card py-button"
+              accessibilityRole="button"
+              accessibilityLabel="Cancel insight"
+            >
+              <Text className="text-center text-base font-sansSemibold text-text">
+                Cancel
+              </Text>
+            </Pressable>
+          </View>
         </View>
-      </View>
-    </KeyboardAwareScrollView>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 

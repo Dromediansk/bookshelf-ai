@@ -25,10 +25,10 @@ const BookPicker = ({
   sortedBooks,
 }: BookPickerProps) => {
   return (
-    <View className="mb-2 rounded-control border border-border bg-surface px-card py-card">
+    <View>
       <Text className="text-sm font-sansSemibold text-brand">Book</Text>
       <View
-        className="mt-3 overflow-hidden rounded-control border border-border bg-surface"
+        className="mt-4 mb-4 overflow-hidden rounded-control border border-border bg-surface"
         style={
           Platform.OS === "ios" ? { height: IOS_PICKER_HEIGHT } : undefined
         }
