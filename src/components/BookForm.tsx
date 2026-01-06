@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { Pressable, Text, TextInput, View } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Ionicons } from "@expo/vector-icons";
 
 import { type BookGenre, type BookStatus } from "@/types/book";
@@ -111,10 +112,12 @@ export const BookForm = ({
 
   return (
     <View className="flex-1 px-4 py-4">
-      <ScrollView
+      <KeyboardAwareScrollView
         className="flex-1"
         contentContainerStyle={{ paddingBottom: 24 }}
         keyboardShouldPersistTaps="handled"
+        enableOnAndroid={true}
+        extraScrollHeight={20}
       >
         {/* Book Details Section */}
         <View className="mb-3">
@@ -283,7 +286,7 @@ export const BookForm = ({
             </View>
           )}
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
 
       <View className="pt-2 pb-8">
         <Pressable

@@ -8,9 +8,58 @@ import { useBooksStore } from "@/store/booksStore";
 import { useInsightsStore } from "@/store/insightsStore";
 import themeColors from "@/utils/colors";
 import { sortBooksForList } from "@/utils/helpers";
+import { Book } from "@/types/book";
 
 const IOS_PICKER_HEIGHT = 140;
 const IOS_PICKER_Y_OFFSET = 24;
+
+type BookPickerProps = {
+  effectiveSelectedBookId: string;
+  setSelectedBookId: (value: string | undefined) => void;
+  sortedBooks: Book[];
+};
+
+const BookPicker = ({
+  effectiveSelectedBookId,
+  setSelectedBookId,
+  sortedBooks,
+}: BookPickerProps) => {
+  return (
+    <View className="mb-2 rounded-control border border-border bg-surface px-card py-card">
+      <Text className="text-sm font-sansSemibold text-brand">Book</Text>
+      <View
+        className="mt-3 overflow-hidden rounded-control border border-border bg-surface"
+        style={
+          Platform.OS === "ios" ? { height: IOS_PICKER_HEIGHT } : undefined
+        }
+      >
+        <Picker
+          selectedValue={effectiveSelectedBookId}
+          onValueChange={(value) =>
+            setSelectedBookId(typeof value === "string" ? value : undefined)
+          }
+          dropdownIconColor={
+            Platform.OS === "android" ? themeColors.text.DEFAULT : undefined
+          }
+          style={
+            Platform.OS === "ios"
+              ? {
+                  height: IOS_PICKER_HEIGHT + IOS_PICKER_Y_OFFSET * 2,
+                  transform: [{ translateY: -IOS_PICKER_Y_OFFSET }],
+                }
+              : {
+                  color: themeColors.text.DEFAULT,
+                }
+          }
+        >
+          {sortedBooks.map((book) => (
+            <Picker.Item key={book.id} label={book.title} value={book.id} />
+          ))}
+        </Picker>
+      </View>
+    </View>
+  );
+};
 
 const NewInsightModal = () => {
   const { books, hasHydrated } = useBooksStore();
@@ -105,57 +154,25 @@ const NewInsightModal = () => {
   };
 
   return (
-    <View className="flex-1 bg-surface-muted">
+    <View className="flex-1 bg-surface-muted px-2 pt-2">
       <Stack.Screen options={{ title: "New Insight" }} />
-
-      <View className="px-2 pt-2">
-        <View className="rounded-control border border-border bg-surface px-card py-card">
-          <Text className="text-sm font-sansSemibold text-brand">Book</Text>
-          <View
-            className="mt-3 overflow-hidden rounded-control border border-border bg-surface"
-            style={
-              Platform.OS === "ios" ? { height: IOS_PICKER_HEIGHT } : undefined
-            }
-          >
-            <Picker
-              selectedValue={effectiveSelectedBookId}
-              onValueChange={(value) =>
-                setSelectedBookId(typeof value === "string" ? value : undefined)
-              }
-              dropdownIconColor={
-                Platform.OS === "android" ? themeColors.text.DEFAULT : undefined
-              }
-              style={
-                Platform.OS === "ios"
-                  ? {
-                      height: IOS_PICKER_HEIGHT + IOS_PICKER_Y_OFFSET * 2,
-                      transform: [{ translateY: -IOS_PICKER_Y_OFFSET }],
-                    }
-                  : {
-                      color: themeColors.text.DEFAULT,
-                    }
-              }
-            >
-              {sortedBooks.map((book) => (
-                <Picker.Item key={book.id} label={book.title} value={book.id} />
-              ))}
-            </Picker>
-          </View>
-        </View>
-      </View>
-
-      <View className="flex-1">
-        <InsightForm
-          insightMode="add"
-          isReady={isFormReady}
-          draftContent={draftContent}
-          setDraftContent={setDraftContent}
-          draftTags={draftTags}
-          setDraftTags={setDraftTags}
-          submitInsight={submitInsight}
-          resetDraft={() => router.back()}
-        />
-      </View>
+      <InsightForm
+        insightMode="add"
+        isReady={isFormReady}
+        draftContent={draftContent}
+        setDraftContent={setDraftContent}
+        draftTags={draftTags}
+        setDraftTags={setDraftTags}
+        submitInsight={submitInsight}
+        resetDraft={() => router.back()}
+        bookPicker={
+          <BookPicker
+            effectiveSelectedBookId={effectiveSelectedBookId}
+            setSelectedBookId={setSelectedBookId}
+            sortedBooks={sortedBooks}
+          />
+        }
+      />
     </View>
   );
 };

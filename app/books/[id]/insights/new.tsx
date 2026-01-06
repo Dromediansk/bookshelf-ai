@@ -79,20 +79,18 @@ const NewInsightModal = () => {
   }
 
   return (
-    <View className="flex-1 bg-surface-muted">
+    <View className="flex-1 bg-surface-muted px-2 pt-2">
       <Stack.Screen options={{ title: book.title }} />
-      <View className="flex-1">
-        <InsightForm
-          insightMode="add"
-          isReady={hasHydrated}
-          draftContent={draftContent}
-          setDraftContent={setDraftContent}
-          draftTags={draftTags}
-          setDraftTags={setDraftTags}
-          submitInsight={submitInsight}
-          resetDraft={() => router.back()}
-        />
-      </View>
+      <InsightForm
+        insightMode="add"
+        isReady={hasHydrated}
+        draftContent={draftContent}
+        setDraftContent={setDraftContent}
+        draftTags={draftTags}
+        setDraftTags={setDraftTags}
+        submitInsight={submitInsight}
+        resetDraft={() => router.back()}
+      />
     </View>
   );
 };
