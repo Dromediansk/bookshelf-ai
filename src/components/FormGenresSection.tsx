@@ -8,74 +8,106 @@ type FormGenresSectionProps = {
   setGenre: (genre: BookGenre) => void;
 };
 
-const GENRES: { value: BookGenre; label: string }[] = BOOK_GENRES.map((g) => ({
-  value: g,
-  label: g,
-}));
+type GenrePillProps = {
+  genre: BookGenre;
+  selected: boolean;
+  onPress: () => void;
+};
+
+const GenrePill = ({ genre, selected, onPress }: GenrePillProps) => {
+  return (
+    <Pressable
+      onPress={onPress}
+      className={
+        selected
+          ? "rounded-full bg-brand px-card py-2"
+          : "rounded-full border border-border bg-surface px-card py-2"
+      }
+      accessibilityRole="button"
+      accessibilityLabel={`Set genre to ${genre}`}
+      accessibilityState={{ selected }}
+    >
+      <Text
+        className={
+          selected
+            ? "text-sm font-sansSemibold text-text-inverse"
+            : "text-sm font-sansSemibold text-text"
+        }
+      >
+        {genre}
+      </Text>
+    </Pressable>
+  );
+};
 
 const FormGenresSection = ({ genre, setGenre }: FormGenresSectionProps) => {
   const [showAllGenres, setShowAllGenres] = useState(false);
 
-  const visibleGenres = useMemo(() => {
-    if (showAllGenres) return GENRES;
+  const { baseGenres, otherGenres } = useMemo(() => {
+    const allGenres = BOOK_GENRES;
+    const baseRaw = allGenres.slice(0, 8);
+    const baseSet = new Set(baseRaw);
 
-    const base = GENRES.slice(0, 8);
-    if (!genre) return base;
-    if (base.some((g) => g.value === genre)) return base;
+    const baseGenres = Array.from(new Set(baseRaw)).sort((a, b) =>
+      a.localeCompare(b)
+    );
+    const unknownIndex = baseGenres.indexOf("Unknown");
+    if (unknownIndex !== -1) {
+      baseGenres.splice(unknownIndex, 1);
+      baseGenres.unshift("Unknown");
+    }
 
-    const selected = GENRES.find((g) => g.value === genre);
-    if (!selected) return base;
+    const otherGenres = Array.from(
+      new Set(allGenres.filter((g) => !baseSet.has(g)))
+    ).sort((a, b) => a.localeCompare(b));
 
-    if (base.length < 8) return [...base, selected];
-
-    const next = [...base];
-    next[7] = selected;
-    return next;
-  }, [genre, showAllGenres]);
+    return { baseGenres, otherGenres };
+  }, []);
 
   return (
     <>
       <View className="flex-row flex-wrap gap-2">
-        {visibleGenres.map((g) => {
-          const selected = g.value === genre;
-          return (
-            <Pressable
-              key={g.value}
-              onPress={() => setGenre(g.value)}
-              className={
-                selected
-                  ? "rounded-full bg-brand px-card py-2"
-                  : "rounded-full border border-border bg-surface px-card py-2"
-              }
-              accessibilityRole="button"
-              accessibilityLabel={`Set genre to ${g.label}`}
-              accessibilityState={{ selected }}
-            >
-              <Text
-                className={
-                  selected
-                    ? "text-sm font-sansSemibold text-text-inverse"
-                    : "text-sm font-sansSemibold text-text"
-                }
-              >
-                {g.label}
-              </Text>
-            </Pressable>
-          );
-        })}
+        {baseGenres.map((g) => (
+          <GenrePill
+            key={g}
+            genre={g}
+            selected={g === genre}
+            onPress={() => setGenre(g)}
+          />
+        ))}
       </View>
-      {GENRES.length > 8 ? (
+
+      {showAllGenres && otherGenres.length > 0 ? (
+        <View className="mt-4">
+          <View className="mb-2 border-t border-border pt-3">
+            <Text className="text-sm font-sansSemibold text-text-muted">
+              More Genres
+            </Text>
+          </View>
+          <View className="flex-row flex-wrap gap-2">
+            {otherGenres.map((g) => (
+              <GenrePill
+                key={g}
+                genre={g}
+                selected={g === genre}
+                onPress={() => setGenre(g)}
+              />
+            ))}
+          </View>
+        </View>
+      ) : null}
+      {BOOK_GENRES.length > 8 ? (
         <Pressable
           onPress={() => setShowAllGenres((prev) => !prev)}
           className="mt-2 self-start"
           accessibilityRole="button"
           accessibilityLabel={
-            showAllGenres ? "Show fewer genres" : "Show all genres"
+            showAllGenres ? "Show fewer genres" : "Show more genres"
           }
           accessibilityState={{ expanded: showAllGenres }}
         >
           <Text className="text-sm font-sansSemibold text-brand">
-            {showAllGenres ? "Show fewer genres" : "Show all genres"}
+            {showAllGenres ? "Show fewer genres" : "Show more genres"}
           </Text>
         </Pressable>
       ) : null}
