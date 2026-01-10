@@ -1,12 +1,22 @@
 import { InsightMode } from "@/types/insight";
-import { FC, ReactNode } from "react";
-import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import {
+  forwardRef,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+} from "react";
+import { ScrollView, Text, TextInput, View } from "react-native";
 import themeColors from "@/utils/colors";
 import {
   MAX_INSIGHT_CONTENT_CHARS,
   MAX_INSIGHT_TAGS_CHARS,
 } from "@/utils/contants";
 import CharacterCountHint from "@/components/shared/CharacterCountHint";
+
+export type InsightFormHandle = {
+  submit: () => void;
+};
 
 type InsightFormProps = {
   insightMode: InsightMode;
@@ -16,120 +26,104 @@ type InsightFormProps = {
   draftTags: string;
   setDraftTags: (value: string) => void;
   submitInsight: () => void;
-  resetDraft: () => void;
   bookPicker?: ReactNode | null;
+  onCanSubmitChange?: (canSubmit: boolean) => void;
 };
 
-const InsightForm: FC<InsightFormProps> = ({
-  insightMode,
-  isReady = true,
-  draftContent,
-  setDraftContent,
-  draftTags,
-  setDraftTags,
-  submitInsight,
-  resetDraft,
-  bookPicker,
-}) => {
-  const canSubmit =
-    isReady &&
-    draftContent.trim().length > 0 &&
-    draftContent.length <= MAX_INSIGHT_CONTENT_CHARS &&
-    draftTags.length <= MAX_INSIGHT_TAGS_CHARS;
+const InsightForm = forwardRef<InsightFormHandle, InsightFormProps>(
+  (
+    {
+      insightMode,
+      isReady = true,
+      draftContent,
+      setDraftContent,
+      draftTags,
+      setDraftTags,
+      submitInsight,
+      bookPicker,
+      onCanSubmitChange,
+    },
+    ref
+  ) => {
+    const canSubmit =
+      isReady &&
+      draftContent.trim().length > 0 &&
+      draftContent.length <= MAX_INSIGHT_CONTENT_CHARS &&
+      draftTags.length <= MAX_INSIGHT_TAGS_CHARS;
 
-  return (
-    <ScrollView
-      contentContainerStyle={{ flexGrow: 1, paddingBottom: 24 }}
-      keyboardShouldPersistTaps="handled"
-      className="flex-1 border border-border bg-surface-muted px-card py-card"
-    >
-      {bookPicker}
+    useEffect(() => {
+      onCanSubmitChange?.(canSubmit);
+    }, [canSubmit, onCanSubmitChange]);
 
-      <View>
-        <Text className="text-sm font-sansSemibold text-brand">
-          {insightMode === "add" ? "New insight" : "Edit insight"}
-        </Text>
+    const handleSubmit = useCallback(() => {
+      if (!canSubmit) return;
+      submitInsight();
+    }, [canSubmit, submitInsight]);
 
-        <View className="mt-4">
-          <TextInput
-            value={draftContent}
-            onChangeText={setDraftContent}
-            placeholder="Write an idea you want to remember…"
-            placeholderTextColor={themeColors.text.placeholder}
-            className="rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text h-48"
-            multiline
-            textAlignVertical="top"
-            autoFocus
-            maxLength={MAX_INSIGHT_CONTENT_CHARS}
-          />
-          <CharacterCountHint
-            current={draftContent.length}
-            max={MAX_INSIGHT_CONTENT_CHARS}
-          />
-        </View>
+    useImperativeHandle(
+      ref,
+      () => ({
+        submit: handleSubmit,
+      }),
+      [handleSubmit]
+    );
 
-        <View className="mt-4">
-          <Text className="mb-2 text-sm font-sansMedium text-text">Tags</Text>
-          <TextInput
-            value={draftTags}
-            onChangeText={setDraftTags}
-            placeholder="e.g. inspiring, focus, habits"
-            placeholderTextColor={themeColors.text.placeholder}
-            className="rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text"
-            autoCapitalize="none"
-            maxLength={MAX_INSIGHT_TAGS_CHARS}
-          />
-          <CharacterCountHint
-            current={draftTags.length}
-            max={MAX_INSIGHT_TAGS_CHARS}
-          />
-          <Text className="mt-2 text-xs font-sans text-text-subtle">
-            Separate tags with commas.
+    return (
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: 24 }}
+        keyboardShouldPersistTaps="handled"
+        className="flex-1 border border-border bg-surface-muted px-card py-card"
+      >
+        {bookPicker}
+
+        <View>
+          <Text className="text-sm font-sansSemibold text-brand">
+            {insightMode === "add" ? "New insight" : "Edit insight"}
           </Text>
-        </View>
 
-        <View className="mt-5">
-          <Pressable
-            onPress={() => {
-              if (!canSubmit) return;
-              submitInsight();
-            }}
-            disabled={!canSubmit}
-            className={
-              canSubmit
-                ? "rounded-control bg-brand px-card py-button"
-                : "rounded-control bg-surface px-card py-button"
-            }
-            accessibilityRole="button"
-            accessibilityLabel={
-              insightMode === "add" ? "Add insight" : "Save insight changes"
-            }
-          >
-            <Text
-              className={
-                canSubmit
-                  ? "text-center text-base font-sansSemibold text-text-inverse"
-                  : "text-center text-base font-sansSemibold text-text-subtle"
-              }
-            >
-              {insightMode === "add" ? "Add insight" : "Save"}
-            </Text>
-          </Pressable>
+          <View className="mt-4">
+            <TextInput
+              value={draftContent}
+              onChangeText={setDraftContent}
+              placeholder="Write an idea you want to remember…"
+              placeholderTextColor={themeColors.text.placeholder}
+              className="rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text h-48"
+              multiline
+              textAlignVertical="top"
+              autoFocus
+              maxLength={MAX_INSIGHT_CONTENT_CHARS}
+            />
+            <CharacterCountHint
+              current={draftContent.length}
+              max={MAX_INSIGHT_CONTENT_CHARS}
+            />
+          </View>
 
-          <Pressable
-            onPress={resetDraft}
-            className="mt-3 rounded-control border border-border bg-surface px-card py-button"
-            accessibilityRole="button"
-            accessibilityLabel="Cancel insight"
-          >
-            <Text className="text-center text-base font-sansSemibold text-text">
-              Cancel
+          <View className="mt-4">
+            <Text className="mb-2 text-sm font-sansMedium text-text">Tags</Text>
+            <TextInput
+              value={draftTags}
+              onChangeText={setDraftTags}
+              placeholder="e.g. inspiring, focus, habits"
+              placeholderTextColor={themeColors.text.placeholder}
+              className="rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text"
+              autoCapitalize="none"
+              maxLength={MAX_INSIGHT_TAGS_CHARS}
+            />
+            <CharacterCountHint
+              current={draftTags.length}
+              max={MAX_INSIGHT_TAGS_CHARS}
+            />
+            <Text className="mt-2 text-xs font-sans text-text-subtle">
+              Separate tags with commas.
             </Text>
-          </Pressable>
+          </View>
         </View>
-      </View>
-    </ScrollView>
-  );
-};
+      </ScrollView>
+    );
+  }
+);
+
+InsightForm.displayName = "InsightForm";
 
 export default InsightForm;

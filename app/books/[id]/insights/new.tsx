@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { router, Stack, useLocalSearchParams } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 
-import InsightForm from "@/components/InsightForm";
+import InsightForm, { type InsightFormHandle } from "@/components/InsightForm";
 import { useBooksStore } from "@/store/booksStore";
 import { useInsightsStore } from "@/store/insightsStore";
+import themeColors from "@/utils/colors";
 
 type NewInsightParams = {
   id: string;
@@ -21,6 +23,9 @@ const NewInsightModal = () => {
 
   const [draftContent, setDraftContent] = useState("");
   const [draftTags, setDraftTags] = useState("");
+
+  const formRef = useRef<InsightFormHandle>(null);
+  const [canSubmit, setCanSubmit] = useState(false);
 
   if (!bookId || !book) {
     return (
@@ -80,8 +85,33 @@ const NewInsightModal = () => {
 
   return (
     <View className="flex-1 bg-surface-muted px-2 pt-2">
-      <Stack.Screen options={{ title: book.title }} />
+      <Stack.Screen
+        options={{
+          title: book.title,
+          headerRight: ({ tintColor }) => (
+            <Pressable
+              onPress={() => formRef.current?.submit()}
+              disabled={!canSubmit}
+              accessibilityRole="button"
+              accessibilityLabel="Save insight"
+              hitSlop={10}
+              style={{ opacity: canSubmit ? 1 : 0.4 }}
+            >
+              <Ionicons
+                name="checkmark"
+                size={24}
+                color={
+                  canSubmit
+                    ? (tintColor ?? themeColors.text.DEFAULT)
+                    : themeColors.text.muted
+                }
+              />
+            </Pressable>
+          ),
+        }}
+      />
       <InsightForm
+        ref={formRef}
         insightMode="add"
         isReady={hasHydrated}
         draftContent={draftContent}
@@ -89,7 +119,7 @@ const NewInsightModal = () => {
         draftTags={draftTags}
         setDraftTags={setDraftTags}
         submitInsight={submitInsight}
-        resetDraft={() => router.back()}
+        onCanSubmitChange={setCanSubmit}
       />
     </View>
   );

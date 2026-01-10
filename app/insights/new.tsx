@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Platform, Pressable, Text, View } from "react-native";
 import { router, Stack } from "expo-router";
 import { Picker } from "@react-native-picker/picker";
+import { Ionicons } from "@expo/vector-icons";
 
-import InsightForm from "@/components/InsightForm";
+import InsightForm, { type InsightFormHandle } from "@/components/InsightForm";
 import { useBooksStore } from "@/store/booksStore";
 import { useInsightsStore } from "@/store/insightsStore";
 import themeColors from "@/utils/colors";
@@ -64,6 +65,9 @@ const BookPicker = ({
 const NewInsightModal = () => {
   const { books, hasHydrated } = useBooksStore();
   const { addInsight } = useInsightsStore();
+
+  const formRef = useRef<InsightFormHandle>(null);
+  const [canSubmit, setCanSubmit] = useState(false);
 
   const sortedBooks = useMemo(() => sortBooksForList(books), [books]);
   const defaultBookId = useMemo(() => {
@@ -155,8 +159,33 @@ const NewInsightModal = () => {
 
   return (
     <View className="flex-1 bg-surface-muted px-2 pt-2">
-      <Stack.Screen options={{ title: "New Insight" }} />
+      <Stack.Screen
+        options={{
+          title: "New Insight",
+          headerRight: ({ tintColor }) => (
+            <Pressable
+              onPress={() => formRef.current?.submit()}
+              disabled={!canSubmit}
+              accessibilityRole="button"
+              accessibilityLabel="Save insight"
+              hitSlop={10}
+              style={{ opacity: canSubmit ? 1 : 0.4 }}
+            >
+              <Ionicons
+                name="checkmark"
+                size={24}
+                color={
+                  canSubmit
+                    ? (tintColor ?? themeColors.text.DEFAULT)
+                    : themeColors.text.muted
+                }
+              />
+            </Pressable>
+          ),
+        }}
+      />
       <InsightForm
+        ref={formRef}
         insightMode="add"
         isReady={isFormReady}
         draftContent={draftContent}
@@ -164,7 +193,7 @@ const NewInsightModal = () => {
         draftTags={draftTags}
         setDraftTags={setDraftTags}
         submitInsight={submitInsight}
-        resetDraft={() => router.back()}
+        onCanSubmitChange={setCanSubmit}
         bookPicker={
           <BookPicker
             effectiveSelectedBookId={effectiveSelectedBookId}
