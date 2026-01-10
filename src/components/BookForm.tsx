@@ -6,7 +6,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { Keyboard, Pressable, Text, TextInput, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import { type BookGenre, type BookStatus } from "@/types/book";
@@ -19,6 +19,7 @@ import {
 import FormGenresSection from "./FormGenresSection";
 import DateField from "./shared/DateField";
 import CharacterCountHint from "./shared/CharacterCountHint";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 export type BookFormValues = {
   title: string;
@@ -145,15 +146,18 @@ export const BookForm = forwardRef<BookFormHandle, BookFormProps>(
     );
 
     return (
-      <ScrollView
-        className="flex-1 px-4 py-4"
-        contentContainerStyle={{ flexGrow: 1, paddingBottom: 24 }}
+      <KeyboardAwareScrollView
+        bottomOffset={62}
         keyboardShouldPersistTaps="handled"
+        className="flex-1 px-4 py-4"
       >
         {/* Book Details Section */}
         <View className="mb-3">
           <Pressable
-            onPress={() => setIsBookDetailsExpanded(!isBookDetailsExpanded)}
+            onPress={() => {
+              Keyboard.dismiss();
+              setIsBookDetailsExpanded((prev) => !prev);
+            }}
             className="mb-2 flex-row items-center justify-between rounded-control border border-border bg-surface-muted px-card py-4"
             accessibilityRole="button"
             accessibilityLabel={`${isBookDetailsExpanded ? "Collapse" : "Expand"} Book Details`}
@@ -223,9 +227,10 @@ export const BookForm = forwardRef<BookFormHandle, BookFormProps>(
         {/* Additional Details Section */}
         <View className="mb-3">
           <Pressable
-            onPress={() =>
-              setIsAdditionalDetailsExpanded(!isAdditionalDetailsExpanded)
-            }
+            onPress={() => {
+              Keyboard.dismiss();
+              setIsAdditionalDetailsExpanded((prev) => !prev);
+            }}
             className="mb-2 flex-row items-center justify-between rounded-control border border-border bg-surface-muted px-card py-4"
             accessibilityRole="button"
             accessibilityLabel={`${isAdditionalDetailsExpanded ? "Collapse" : "Expand"} Additional Details`}
@@ -317,7 +322,7 @@ export const BookForm = forwardRef<BookFormHandle, BookFormProps>(
             </View>
           )}
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
     );
   }
 );

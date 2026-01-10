@@ -12,6 +12,7 @@ import {
   Montserrat_700Bold,
 } from "@expo-google-fonts/montserrat";
 import { DEFAULT_HEADER_OPTIONS } from "@/utils/navigation";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -31,45 +32,47 @@ export const RootLayout = () => {
   if (!fontsLoaded) return null;
 
   return (
-    <SafeAreaProvider>
-      <ActionSheetProvider>
-        <>
-          <StatusBar style="dark" />
-          <Stack
-            screenOptions={{
-              ...DEFAULT_HEADER_OPTIONS,
-              headerBackButtonDisplayMode: "minimal",
-            }}
-          >
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="add-book" options={{ title: "Add Book" }} />
-            <Stack.Screen
-              name="books/[id]/index"
-              options={{
-                title: "Book Details",
-                headerBackTitle: "Library",
+    <KeyboardProvider>
+      <SafeAreaProvider>
+        <ActionSheetProvider>
+          <>
+            <StatusBar style="dark" />
+            <Stack
+              screenOptions={{
+                ...DEFAULT_HEADER_OPTIONS,
+                headerBackButtonDisplayMode: "minimal",
               }}
-            />
-            <Stack.Screen
-              name="books/[id]/insights/new"
-              options={{ presentation: "modal" }}
-            />
-            <Stack.Screen
-              name="insights/new"
-              options={{ title: "New Insight", presentation: "modal" }}
-            />
-            <Stack.Screen
-              name="books/[id]/insights/[insightId]/edit"
-              options={{ presentation: "modal" }}
-            />
-            <Stack.Screen
-              name="books/[id]/edit"
-              options={{ title: "Edit Book" }}
-            />
-          </Stack>
-        </>
-      </ActionSheetProvider>
-    </SafeAreaProvider>
+            >
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="add-book" options={{ title: "Add Book" }} />
+              <Stack.Screen
+                name="books/[id]/index"
+                options={{
+                  title: "Book Details",
+                  headerBackTitle: "Library",
+                }}
+              />
+              <Stack.Screen
+                name="books/[id]/insights/new"
+                options={{ presentation: "modal" }}
+              />
+              <Stack.Screen
+                name="insights/new"
+                options={{ title: "New Insight", presentation: "modal" }}
+              />
+              <Stack.Screen
+                name="books/[id]/insights/[insightId]/edit"
+                options={{ presentation: "modal" }}
+              />
+              <Stack.Screen
+                name="books/[id]/edit"
+                options={{ title: "Edit Book" }}
+              />
+            </Stack>
+          </>
+        </ActionSheetProvider>
+      </SafeAreaProvider>
+    </KeyboardProvider>
   );
 };
 

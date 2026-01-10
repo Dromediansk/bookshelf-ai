@@ -6,13 +6,14 @@ import {
   useEffect,
   useImperativeHandle,
 } from "react";
-import { ScrollView, Text, TextInput, View } from "react-native";
+import { Text, TextInput, View } from "react-native";
 import themeColors from "@/utils/colors";
 import {
   MAX_INSIGHT_CONTENT_CHARS,
   MAX_INSIGHT_TAGS_CHARS,
 } from "@/utils/contants";
 import CharacterCountHint from "@/components/shared/CharacterCountHint";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 export type InsightFormHandle = {
   submit: () => void;
@@ -69,7 +70,8 @@ const InsightForm = forwardRef<InsightFormHandle, InsightFormProps>(
     );
 
     return (
-      <ScrollView
+      <KeyboardAwareScrollView
+        bottomOffset={62}
         contentContainerStyle={{ flexGrow: 1, paddingBottom: 24 }}
         keyboardShouldPersistTaps="handled"
         className="flex-1 border border-border bg-surface-muted px-card py-card"
@@ -119,7 +121,7 @@ const InsightForm = forwardRef<InsightFormHandle, InsightFormProps>(
             </Text>
           </View>
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
     );
   }
 );
