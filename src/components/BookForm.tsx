@@ -71,7 +71,7 @@ export const BookForm = forwardRef<BookFormHandle, BookFormProps>(
 
     const [isBookDetailsExpanded, setIsBookDetailsExpanded] = useState(true);
     const [isAdditionalDetailsExpanded, setIsAdditionalDetailsExpanded] =
-      useState(false);
+      useState(true);
 
     useEffect(() => {
       setTitle(initialValues?.title ?? "");
