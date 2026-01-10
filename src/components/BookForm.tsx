@@ -1,13 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
 import {
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useState,
+} from "react";
+import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import { type BookGenre, type BookStatus } from "@/types/book";
@@ -31,9 +30,13 @@ export type BookFormValues = {
   finishedAt?: string;
 };
 
+export type BookFormHandle = {
+  submit: () => void;
+};
+
 type BookFormProps = {
-  submitLabel?: string;
   initialValues?: Partial<BookFormValues>;
+  onCanSubmitChange?: (canSubmit: boolean) => void;
   onSubmit: (values: BookFormValues) => void;
 };
 
@@ -43,287 +46,280 @@ const STATUSES: { value: BookStatus; label: string }[] = [
   { value: "finished", label: "Finished" },
 ];
 
-export const BookForm = ({
-  submitLabel = "Save",
-  initialValues,
-  onSubmit,
-}: BookFormProps) => {
-  const [title, setTitle] = useState(initialValues?.title ?? "");
-  const [author, setAuthor] = useState(initialValues?.author ?? "");
-  const [description, setDescription] = useState(
-    initialValues?.description ?? ""
-  );
-  const [genre, setGenre] = useState<BookGenre>(
-    initialValues?.genre ?? "Unknown"
-  );
-  const [createdAt, setCreatedAt] = useState<Date>(
-    initialValues?.createdAt ? new Date(initialValues.createdAt) : new Date()
-  );
-  const [finishedAt, setFinishedAt] = useState<Date>(
-    initialValues?.finishedAt ? new Date(initialValues.finishedAt) : new Date()
-  );
-  const [status, setStatus] = useState<BookStatus>(
-    initialValues?.status ?? "to-read"
-  );
-
-  const [isBookDetailsExpanded, setIsBookDetailsExpanded] = useState(true);
-  const [isAdditionalDetailsExpanded, setIsAdditionalDetailsExpanded] =
-    useState(false);
-
-  useEffect(() => {
-    setTitle(initialValues?.title ?? "");
-    setAuthor(initialValues?.author ?? "");
-    setDescription(initialValues?.description ?? "");
-    setGenre(initialValues?.genre ?? "Unknown");
-    setCreatedAt(
+export const BookForm = forwardRef<BookFormHandle, BookFormProps>(
+  ({ initialValues, onCanSubmitChange, onSubmit }, ref) => {
+    const [title, setTitle] = useState(initialValues?.title ?? "");
+    const [author, setAuthor] = useState(initialValues?.author ?? "");
+    const [description, setDescription] = useState(
+      initialValues?.description ?? ""
+    );
+    const [genre, setGenre] = useState<BookGenre>(
+      initialValues?.genre ?? "Unknown"
+    );
+    const [createdAt, setCreatedAt] = useState<Date>(
       initialValues?.createdAt ? new Date(initialValues.createdAt) : new Date()
     );
-    setFinishedAt(
+    const [finishedAt, setFinishedAt] = useState<Date>(
       initialValues?.finishedAt
         ? new Date(initialValues.finishedAt)
         : new Date()
     );
-    setStatus(initialValues?.status ?? "to-read");
-  }, [
-    initialValues?.title,
-    initialValues?.author,
-    initialValues?.description,
-    initialValues?.genre,
-    initialValues?.createdAt,
-    initialValues?.finishedAt,
-    initialValues?.status,
-  ]);
-
-  const canSave = useMemo(() => {
-    return (
-      title.trim().length > 0 &&
-      title.length <= MAX_BOOK_TITLE_CHARS &&
-      author.length <= MAX_BOOK_AUTHOR_CHARS &&
-      description.length <= MAX_BOOK_DESCRIPTION_CHARS
+    const [status, setStatus] = useState<BookStatus>(
+      initialValues?.status ?? "to-read"
     );
-  }, [author, description, title]);
 
-  const handleSubmit = () => {
-    if (!canSave) return;
+    const [isBookDetailsExpanded, setIsBookDetailsExpanded] = useState(true);
+    const [isAdditionalDetailsExpanded, setIsAdditionalDetailsExpanded] =
+      useState(false);
 
-    onSubmit({
-      title: title.trim(),
-      author: author.trim(),
-      description: description.trim(),
+    useEffect(() => {
+      setTitle(initialValues?.title ?? "");
+      setAuthor(initialValues?.author ?? "");
+      setDescription(initialValues?.description ?? "");
+      setGenre(initialValues?.genre ?? "Unknown");
+      setCreatedAt(
+        initialValues?.createdAt
+          ? new Date(initialValues.createdAt)
+          : new Date()
+      );
+      setFinishedAt(
+        initialValues?.finishedAt
+          ? new Date(initialValues.finishedAt)
+          : new Date()
+      );
+      setStatus(initialValues?.status ?? "to-read");
+    }, [
+      initialValues?.title,
+      initialValues?.author,
+      initialValues?.description,
+      initialValues?.genre,
+      initialValues?.createdAt,
+      initialValues?.finishedAt,
+      initialValues?.status,
+    ]);
+
+    const canSave = useMemo(() => {
+      return (
+        title.trim().length > 0 &&
+        title.length <= MAX_BOOK_TITLE_CHARS &&
+        author.length <= MAX_BOOK_AUTHOR_CHARS &&
+        description.length <= MAX_BOOK_DESCRIPTION_CHARS
+      );
+    }, [author, description, title]);
+
+    useEffect(() => {
+      onCanSubmitChange?.(canSave);
+    }, [canSave, onCanSubmitChange]);
+
+    const handleSubmit = useCallback(() => {
+      if (!canSave) return;
+
+      onSubmit({
+        title: title.trim(),
+        author: author.trim(),
+        description: description.trim(),
+        genre,
+        status,
+        createdAt: createdAt.toISOString(),
+        finishedAt:
+          status === "finished" ? finishedAt.toISOString() : undefined,
+      });
+    }, [
+      author,
+      canSave,
+      createdAt,
+      description,
+      finishedAt,
       genre,
+      onSubmit,
       status,
-      createdAt: createdAt.toISOString(),
-      finishedAt: status === "finished" ? finishedAt.toISOString() : undefined,
-    });
-  };
+      title,
+    ]);
 
-  return (
-    <>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
-        keyboardVerticalOffset={100}
+    useImperativeHandle(
+      ref,
+      () => ({
+        submit: handleSubmit,
+      }),
+      [handleSubmit]
+    );
+
+    return (
+      <ScrollView
+        className="flex-1 px-4 py-4"
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: 24 }}
+        keyboardShouldPersistTaps="handled"
       >
-        <ScrollView
-          className="flex-1 px-4 py-4"
-          contentContainerStyle={{ flexGrow: 1, paddingBottom: 24 }}
-          keyboardShouldPersistTaps="handled"
-        >
-          {/* Book Details Section */}
-          <View className="mb-3">
-            <Pressable
-              onPress={() => setIsBookDetailsExpanded(!isBookDetailsExpanded)}
-              className="mb-2 flex-row items-center justify-between rounded-control border border-border bg-surface-muted px-card py-4"
-              accessibilityRole="button"
-              accessibilityLabel={`${isBookDetailsExpanded ? "Collapse" : "Expand"} Book Details`}
-            >
-              <Text className="text-base font-sansSemibold text-text">
-                Book Details
-              </Text>
-              <Ionicons
-                name={isBookDetailsExpanded ? "chevron-up" : "chevron-down"}
-                size={20}
-                color={themeColors.text.muted}
-              />
-            </Pressable>
+        {/* Book Details Section */}
+        <View className="mb-3">
+          <Pressable
+            onPress={() => setIsBookDetailsExpanded(!isBookDetailsExpanded)}
+            className="mb-2 flex-row items-center justify-between rounded-control border border-border bg-surface-muted px-card py-4"
+            accessibilityRole="button"
+            accessibilityLabel={`${isBookDetailsExpanded ? "Collapse" : "Expand"} Book Details`}
+          >
+            <Text className="text-base font-sansSemibold text-text">
+              Book Details
+            </Text>
+            <Ionicons
+              name={isBookDetailsExpanded ? "chevron-up" : "chevron-down"}
+              size={20}
+              color={themeColors.text.muted}
+            />
+          </Pressable>
 
-            {isBookDetailsExpanded && (
-              <View className="px-4">
-                <View className="mb-5">
-                  <Text className="mb-2 text-sm font-sansMedium text-text">
-                    Book name *
-                  </Text>
-                  <TextInput
-                    value={title}
-                    onChangeText={setTitle}
-                    placeholder="Harry Potter and the Sorcerer's Stone"
-                    placeholderTextColor={themeColors.text.placeholder}
-                    className="rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text"
-                    autoCapitalize="words"
-                    returnKeyType="done"
-                    autoFocus
-                    maxLength={MAX_BOOK_TITLE_CHARS}
-                  />
-                  <CharacterCountHint
-                    current={title.length}
-                    max={MAX_BOOK_TITLE_CHARS}
-                  />
-                </View>
-
-                <View className="mb-5">
-                  <Text className="mb-2 text-sm font-sansMedium text-text">
-                    Author
-                  </Text>
-                  <TextInput
-                    value={author}
-                    onChangeText={setAuthor}
-                    placeholder="J.K. Rowling"
-                    placeholderTextColor={themeColors.text.placeholder}
-                    className="rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text"
-                    autoCapitalize="words"
-                    maxLength={MAX_BOOK_AUTHOR_CHARS}
-                  />
-                  <CharacterCountHint
-                    current={author.length}
-                    max={MAX_BOOK_AUTHOR_CHARS}
-                  />
-                </View>
-
-                <View className="mb-6">
-                  <Text className="mb-2 text-sm font-sansMedium text-text">
-                    Genre
-                  </Text>
-                  <FormGenresSection genre={genre} setGenre={setGenre} />
-                </View>
+          {isBookDetailsExpanded && (
+            <View className="px-4">
+              <View className="mb-5">
+                <Text className="mb-2 text-sm font-sansMedium text-text">
+                  Book name *
+                </Text>
+                <TextInput
+                  value={title}
+                  onChangeText={setTitle}
+                  placeholder="Harry Potter and the Sorcerer's Stone"
+                  placeholderTextColor={themeColors.text.placeholder}
+                  className="rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text"
+                  autoCapitalize="words"
+                  returnKeyType="done"
+                  autoFocus
+                  maxLength={MAX_BOOK_TITLE_CHARS}
+                />
+                <CharacterCountHint
+                  current={title.length}
+                  max={MAX_BOOK_TITLE_CHARS}
+                />
               </View>
-            )}
-          </View>
 
-          {/* Additional Details Section */}
-          <View className="mb-3">
-            <Pressable
-              onPress={() =>
-                setIsAdditionalDetailsExpanded(!isAdditionalDetailsExpanded)
-              }
-              className="mb-2 flex-row items-center justify-between rounded-control border border-border bg-surface-muted px-card py-4"
-              accessibilityRole="button"
-              accessibilityLabel={`${isAdditionalDetailsExpanded ? "Collapse" : "Expand"} Additional Details`}
-            >
-              <Text className="text-base font-sansSemibold text-text">
-                Additional Details
-              </Text>
-              <Ionicons
-                name={
-                  isAdditionalDetailsExpanded ? "chevron-up" : "chevron-down"
-                }
-                size={20}
-                color={themeColors.text.muted}
-              />
-            </Pressable>
+              <View className="mb-5">
+                <Text className="mb-2 text-sm font-sansMedium text-text">
+                  Author
+                </Text>
+                <TextInput
+                  value={author}
+                  onChangeText={setAuthor}
+                  placeholder="J.K. Rowling"
+                  placeholderTextColor={themeColors.text.placeholder}
+                  className="rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text"
+                  autoCapitalize="words"
+                  maxLength={MAX_BOOK_AUTHOR_CHARS}
+                />
+                <CharacterCountHint
+                  current={author.length}
+                  max={MAX_BOOK_AUTHOR_CHARS}
+                />
+              </View>
 
-            {isAdditionalDetailsExpanded && (
-              <View className="px-4">
-                <View className="mb-5">
-                  <Text className="mb-2 text-sm font-sansMedium text-text">
-                    Description
-                  </Text>
-                  <TextInput
-                    value={description}
-                    onChangeText={setDescription}
-                    placeholder="The story of a young wizard, Harry Potter, who discovers he's a wizard and attends Hogwarts School of Witchcraft and Wizardry..."
-                    placeholderTextColor={themeColors.text.placeholder}
-                    className="h-32 rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text"
-                    multiline
-                    numberOfLines={6}
-                    textAlignVertical="top"
-                    maxLength={MAX_BOOK_DESCRIPTION_CHARS}
-                  />
-                  <CharacterCountHint
-                    current={description.length}
-                    max={MAX_BOOK_DESCRIPTION_CHARS}
-                  />
-                </View>
+              <View className="mb-6">
+                <Text className="mb-2 text-sm font-sansMedium text-text">
+                  Genre
+                </Text>
+                <FormGenresSection genre={genre} setGenre={setGenre} />
+              </View>
+            </View>
+          )}
+        </View>
 
-                <View className="mb-6">
-                  <DateField
-                    label="Creation Date"
-                    date={createdAt}
-                    setDate={setCreatedAt}
-                  />
-                </View>
+        {/* Additional Details Section */}
+        <View className="mb-3">
+          <Pressable
+            onPress={() =>
+              setIsAdditionalDetailsExpanded(!isAdditionalDetailsExpanded)
+            }
+            className="mb-2 flex-row items-center justify-between rounded-control border border-border bg-surface-muted px-card py-4"
+            accessibilityRole="button"
+            accessibilityLabel={`${isAdditionalDetailsExpanded ? "Collapse" : "Expand"} Additional Details`}
+          >
+            <Text className="text-base font-sansSemibold text-text">
+              Additional Details
+            </Text>
+            <Ionicons
+              name={isAdditionalDetailsExpanded ? "chevron-up" : "chevron-down"}
+              size={20}
+              color={themeColors.text.muted}
+            />
+          </Pressable>
 
-                <View className="mb-6">
-                  <Text className="mb-2 text-sm font-sansMedium text-text">
-                    Status
-                  </Text>
-                  <View className="flex-row flex-wrap gap-2">
-                    {STATUSES.map((s) => {
-                      const selected = s.value === status;
-                      return (
-                        <Pressable
-                          key={s.value}
-                          onPress={() => setStatus(s.value)}
+          {isAdditionalDetailsExpanded && (
+            <View className="px-4">
+              <View className="mb-5">
+                <Text className="mb-2 text-sm font-sansMedium text-text">
+                  Description
+                </Text>
+                <TextInput
+                  value={description}
+                  onChangeText={setDescription}
+                  placeholder="The story of a young wizard, Harry Potter, who discovers he's a wizard and attends Hogwarts School of Witchcraft and Wizardry..."
+                  placeholderTextColor={themeColors.text.placeholder}
+                  className="h-32 rounded-control border border-border bg-surface px-card py-field text-base font-sans text-text"
+                  multiline
+                  numberOfLines={6}
+                  textAlignVertical="top"
+                  maxLength={MAX_BOOK_DESCRIPTION_CHARS}
+                />
+                <CharacterCountHint
+                  current={description.length}
+                  max={MAX_BOOK_DESCRIPTION_CHARS}
+                />
+              </View>
+
+              <View className="mb-6">
+                <DateField
+                  label="Creation Date"
+                  date={createdAt}
+                  setDate={setCreatedAt}
+                />
+              </View>
+
+              <View className="mb-6">
+                <Text className="mb-2 text-sm font-sansMedium text-text">
+                  Status
+                </Text>
+                <View className="flex-row flex-wrap gap-2">
+                  {STATUSES.map((s) => {
+                    const selected = s.value === status;
+                    return (
+                      <Pressable
+                        key={s.value}
+                        onPress={() => setStatus(s.value)}
+                        className={
+                          selected
+                            ? "rounded-full bg-brand px-card py-2"
+                            : "rounded-full border border-border bg-surface px-card py-2"
+                        }
+                        accessibilityRole="button"
+                        accessibilityLabel={`Set status to ${s.label}`}
+                      >
+                        <Text
                           className={
                             selected
-                              ? "rounded-full bg-brand px-card py-2"
-                              : "rounded-full border border-border bg-surface px-card py-2"
+                              ? "text-sm font-sansSemibold text-text-inverse"
+                              : "text-sm font-sansSemibold text-text"
                           }
-                          accessibilityRole="button"
-                          accessibilityLabel={`Set status to ${s.label}`}
                         >
-                          <Text
-                            className={
-                              selected
-                                ? "text-sm font-sansSemibold text-text-inverse"
-                                : "text-sm font-sansSemibold text-text"
-                            }
-                          >
-                            {s.label}
-                          </Text>
-                        </Pressable>
-                      );
-                    })}
-                  </View>
+                          {s.label}
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
                 </View>
-
-                {status === "finished" && (
-                  <View className="mb-6">
-                    <DateField
-                      label="When did you finish the book?"
-                      date={finishedAt}
-                      setDate={setFinishedAt}
-                    />
-                  </View>
-                )}
               </View>
-            )}
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
 
-      <View className="pt-2 pb-8">
-        <Pressable
-          onPress={handleSubmit}
-          disabled={!canSave}
-          className={
-            canSave
-              ? "rounded-control bg-brand px-card py-button"
-              : "rounded-control bg-surface-muted px-card py-button"
-          }
-          accessibilityRole="button"
-          accessibilityLabel={submitLabel}
-        >
-          <Text
-            className={
-              canSave
-                ? "text-center text-base font-sansSemibold text-text-inverse"
-                : "text-center text-base font-sansSemibold text-text-subtle"
-            }
-          >
-            {submitLabel}
-          </Text>
-        </Pressable>
-      </View>
-    </>
-  );
-};
+              {status === "finished" && (
+                <View className="mb-6">
+                  <DateField
+                    label="When did you finish the book?"
+                    date={finishedAt}
+                    setDate={setFinishedAt}
+                  />
+                </View>
+              )}
+            </View>
+          )}
+        </View>
+      </ScrollView>
+    );
+  }
+);
+
+BookForm.displayName = "BookForm";

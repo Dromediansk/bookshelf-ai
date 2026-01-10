@@ -1,13 +1,14 @@
-import { Pressable, Text, View } from "react-native";
+import { useState } from "react";
+import { Alert, Pressable, Text, View } from "react-native";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { cssInterop } from "nativewind";
+import { useActionSheet } from "@expo/react-native-action-sheet";
 
 import { StatusBadge } from "@/components/StatusBadge";
 import { useBooksStore } from "@/store/booksStore";
 import { InsightsSection } from "@/components/InsightsSection";
 import { AboutBookModal } from "@/components/AboutBookModal";
-import { useState } from "react";
 import { getBookDateLabelByPriority } from "@/utils/helpers";
 import themeColors from "@/utils/colors";
 import { HeaderTitle } from "@/components/shared/HeaderTitle";
@@ -26,7 +27,9 @@ export const BookDetailScreen = () => {
 
   const openAbout = () => setIsAboutOpen(true);
 
-  const { getBookById, hasHydrated } = useBooksStore();
+  const { showActionSheetWithOptions } = useActionSheet();
+
+  const { getBookById, hasHydrated, removeBook } = useBooksStore();
   const book = getBookById(bookId);
 
   if (!bookId || !book) {
@@ -71,17 +74,52 @@ export const BookDetailScreen = () => {
           ),
           headerRight: ({ tintColor }) => (
             <Pressable
-              onPress={() =>
-                router.push({
-                  pathname: "/books/[id]/edit",
-                  params: { id },
-                })
-              }
+              onPress={() => {
+                showActionSheetWithOptions(
+                  {
+                    options: ["Edit", "Delete", "Cancel"],
+                    cancelButtonIndex: 2,
+                    destructiveButtonIndex: 1,
+                    title: "Book options",
+                  },
+                  (selectedIndex) => {
+                    if (selectedIndex === 0) {
+                      router.push({
+                        pathname: "/books/[id]/edit",
+                        params: { id },
+                      });
+                      return;
+                    }
+
+                    if (selectedIndex === 1) {
+                      Alert.alert(
+                        "Delete book?",
+                        "This action can’t be undone.",
+                        [
+                          { text: "Cancel", style: "cancel" },
+                          {
+                            text: "Delete",
+                            style: "destructive",
+                            onPress: () => {
+                              removeBook(id);
+                              router.replace("/");
+                            },
+                          },
+                        ]
+                      );
+                    }
+                  }
+                );
+              }}
               accessibilityRole="button"
-              accessibilityLabel="Edit book"
+              accessibilityLabel="Open book menu"
               hitSlop={10}
             >
-              <Ionicons name="create-outline" size={22} color={tintColor} />
+              <Ionicons
+                name="ellipsis-vertical"
+                size={22}
+                color={tintColor ?? themeColors.text.DEFAULT}
+              />
             </Pressable>
           ),
         }}

@@ -1,8 +1,9 @@
-import { Text, View, Pressable } from "react-native";
+import { useRef, useState } from "react";
+import { Pressable, Text, View } from "react-native";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
-import { BookForm } from "@/components/BookForm";
+import { BookForm, type BookFormHandle } from "@/components/BookForm";
 import { useBooksStore } from "@/store/booksStore";
 import themeColors from "@/utils/colors";
 
@@ -14,16 +15,11 @@ export const EditBookScreen = () => {
   const params = useLocalSearchParams<EditBookScreenParams>();
   const bookId = params.id;
 
-  const { getBookById, updateBook, removeBook } = useBooksStore();
+  const formRef = useRef<BookFormHandle>(null);
+  const [canSubmit, setCanSubmit] = useState(false);
+
+  const { getBookById, updateBook } = useBooksStore();
   const book = getBookById(bookId);
-
-  function onDelete() {
-    if (!book) return;
-    removeBook(book.id);
-
-    // Ensure we can't navigate back to the deleted book screens.
-    router.replace("/");
-  }
 
   if (!bookId || !book) {
     return (
@@ -55,17 +51,23 @@ export const EditBookScreen = () => {
       <Stack.Screen
         options={{
           title: book.title,
-          headerRight: () => (
+          headerRight: ({ tintColor }) => (
             <Pressable
-              onPress={onDelete}
+              onPress={() => formRef.current?.submit()}
+              disabled={!canSubmit}
               accessibilityRole="button"
-              accessibilityLabel="Delete book"
+              accessibilityLabel="Save changes"
               hitSlop={10}
+              style={{ opacity: canSubmit ? 1 : 0.4 }}
             >
               <Ionicons
-                name="trash-outline"
-                size={22}
-                color={themeColors.danger.text}
+                name="checkmark"
+                size={24}
+                color={
+                  canSubmit
+                    ? (tintColor ?? themeColors.text.DEFAULT)
+                    : themeColors.text.muted
+                }
               />
             </Pressable>
           ),
@@ -73,7 +75,8 @@ export const EditBookScreen = () => {
       />
 
       <BookForm
-        submitLabel="Save"
+        ref={formRef}
+        onCanSubmitChange={setCanSubmit}
         initialValues={{
           title: book.title,
           author: book.author,
