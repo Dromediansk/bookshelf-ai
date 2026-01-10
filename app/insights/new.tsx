@@ -158,7 +158,7 @@ const NewInsightModal = () => {
   };
 
   return (
-    <View className="flex-1 bg-surface-muted px-2 pt-2">
+    <>
       <Stack.Screen
         options={{
           title: "New Insight",
@@ -202,7 +202,7 @@ const NewInsightModal = () => {
           />
         }
       />
-    </View>
+    </>
   );
 };
 

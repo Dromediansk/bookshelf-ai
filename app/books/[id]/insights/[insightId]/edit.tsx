@@ -133,7 +133,7 @@ const EditInsightModal = () => {
   }
 
   return (
-    <View className="flex-1 bg-surface-muted px-2 pt-2">
+    <>
       <Stack.Screen
         options={{
           title: book.title,
@@ -168,10 +168,9 @@ const EditInsightModal = () => {
         draftTags={draftTags}
         setDraftTags={setDraftTags}
         submitInsight={submitInsight}
-        resetDraft={() => router.back()}
         onCanSubmitChange={setCanSubmit}
       />
-    </View>
+    </>
   );
 };
 
