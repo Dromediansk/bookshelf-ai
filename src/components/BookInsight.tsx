@@ -5,7 +5,7 @@ import { toTime } from "@/utils/helpers";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { FC } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Alert, Pressable, Text, View } from "react-native";
 
 type BookInsightProps = {
   bookId: string;
@@ -71,7 +71,15 @@ const BookInsight: FC<BookInsightProps> = ({ bookId, insight }) => {
             onPress={(event) => {
               event.stopPropagation?.();
               if (!hasHydrated) return;
-              deleteInsight(bookId, insight.id);
+
+              Alert.alert("Delete insight?", "This action can’t be undone.", [
+                { text: "Cancel", style: "cancel" },
+                {
+                  text: "Delete",
+                  style: "destructive",
+                  onPress: () => deleteInsight(bookId, insight.id),
+                },
+              ]);
             }}
             disabled={!hasHydrated}
             className={

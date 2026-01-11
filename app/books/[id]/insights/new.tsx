@@ -27,6 +27,12 @@ const NewInsightModal = () => {
   const formRef = useRef<InsightFormHandle>(null);
   const [canSubmit, setCanSubmit] = useState(false);
 
+  const submitInsight = () => {
+    if (!hasHydrated) return;
+    addInsight(bookId, { content: draftContent, tags: draftTags });
+    router.back();
+  };
+
   if (!bookId || !book) {
     return (
       <View className="flex-1 bg-surface py-2">
@@ -75,12 +81,6 @@ const NewInsightModal = () => {
         </View>
       </View>
     );
-  }
-
-  function submitInsight() {
-    if (!hasHydrated) return;
-    addInsight(bookId, { content: draftContent, tags: draftTags });
-    router.back();
   }
 
   return (
