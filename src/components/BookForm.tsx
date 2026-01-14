@@ -73,32 +73,6 @@ export const BookForm = forwardRef<BookFormHandle, BookFormProps>(
     const [isAdditionalDetailsExpanded, setIsAdditionalDetailsExpanded] =
       useState(true);
 
-    useEffect(() => {
-      setTitle(initialValues?.title ?? "");
-      setAuthor(initialValues?.author ?? "");
-      setDescription(initialValues?.description ?? "");
-      setGenre(initialValues?.genre ?? "Unknown");
-      setCreatedAt(
-        initialValues?.createdAt
-          ? new Date(initialValues.createdAt)
-          : new Date()
-      );
-      setFinishedAt(
-        initialValues?.finishedAt
-          ? new Date(initialValues.finishedAt)
-          : new Date()
-      );
-      setStatus(initialValues?.status ?? "to-read");
-    }, [
-      initialValues?.title,
-      initialValues?.author,
-      initialValues?.description,
-      initialValues?.genre,
-      initialValues?.createdAt,
-      initialValues?.finishedAt,
-      initialValues?.status,
-    ]);
-
     const canSave = useMemo(() => {
       return (
         title.trim().length > 0 &&
