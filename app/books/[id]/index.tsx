@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { Alert, Pressable, Text, View } from "react-native";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
-import { cssInterop } from "nativewind";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 
 import { StatusBadge } from "@/components/StatusBadge";
@@ -12,12 +10,11 @@ import { AboutBookModal } from "@/components/AboutBookModal";
 import { getBookDateLabelByPriority } from "@/utils/helpers";
 import themeColors from "@/utils/colors";
 import { HeaderTitle } from "@/components/shared/HeaderTitle";
+import IconButton from "@/components/shared/IconButton";
 
 type BookDetailScreenParams = {
   id: string;
 };
-
-const TailwindIonicons = cssInterop(Ionicons, { className: "style" });
 
 export const BookDetailScreen = () => {
   const params = useLocalSearchParams<BookDetailScreenParams>();
@@ -73,7 +70,10 @@ export const BookDetailScreen = () => {
             />
           ),
           headerRight: ({ tintColor }) => (
-            <Pressable
+            <IconButton
+              icon="ellipsis-vertical"
+              accessibilityLabel="Open book menu"
+              tintColor={tintColor}
               onPress={() => {
                 showActionSheetWithOptions(
                   {
@@ -111,16 +111,7 @@ export const BookDetailScreen = () => {
                   }
                 );
               }}
-              accessibilityRole="button"
-              accessibilityLabel="Open book menu"
-              hitSlop={10}
-            >
-              <Ionicons
-                name="ellipsis-vertical"
-                size={22}
-                color={tintColor ?? themeColors.text.DEFAULT}
-              />
-            </Pressable>
+            />
           ),
         }}
       />
@@ -136,21 +127,15 @@ export const BookDetailScreen = () => {
               )}
             </View>
 
-            <View className="flex-row items-center gap-4 mt-2">
+            <View className="flex-row items-center gap-2 mt-2">
               <StatusBadge status={status} />
 
-              <Pressable
+              <IconButton
                 onPress={openAbout}
-                accessibilityRole="button"
                 accessibilityLabel="About the book"
-                hitSlop={10}
-              >
-                <TailwindIonicons
-                  name="information-circle-outline"
-                  size={22}
-                  className="text-text-subtle"
-                />
-              </Pressable>
+                icon="information-circle-outline"
+                iconSize={22}
+              />
             </View>
           </View>
 
@@ -181,7 +166,7 @@ export const BookDetailScreen = () => {
 
         <View className="absolute bottom-4 left-0 right-4">
           {book.insightIds.length > 0 && (
-            <Pressable
+            <IconButton
               onPress={() =>
                 router.push({
                   pathname: "/books/[id]/insights/new",
@@ -189,21 +174,16 @@ export const BookDetailScreen = () => {
                 })
               }
               disabled={!hasHydrated}
-              accessibilityRole="button"
               accessibilityLabel="Add insight"
-              hitSlop={10}
+              icon="bulb"
+              iconSize={28}
+              tintColor={themeColors.text.inverse}
               className={
                 hasHydrated
                   ? "absolute bottom-6 right-6 rounded-full bg-brand p-3"
                   : "absolute bottom-6 right-6 rounded-full bg-surface-muted p-3"
               }
-            >
-              <TailwindIonicons
-                name="bulb"
-                size={28}
-                color={themeColors.text.inverse}
-              />
-            </Pressable>
+            />
           )}
         </View>
       </View>

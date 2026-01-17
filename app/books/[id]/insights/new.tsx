@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import IconButton from "@/components/shared/IconButton";
 
 import InsightForm, { type InsightFormHandle } from "@/components/InsightForm";
 import { useBooksStore } from "@/store/booksStore";
@@ -89,24 +89,18 @@ const NewInsightModal = () => {
         options={{
           title: book.title,
           headerRight: ({ tintColor }) => (
-            <Pressable
+            <IconButton
               onPress={() => formRef.current?.submit()}
               disabled={!canSubmit}
-              accessibilityRole="button"
               accessibilityLabel="Save insight"
-              hitSlop={10}
+              icon="checkmark"
+              tintColor={
+                canSubmit
+                  ? (tintColor ?? themeColors.text.DEFAULT)
+                  : themeColors.text.muted
+              }
               style={{ opacity: canSubmit ? 1 : 0.4 }}
-            >
-              <Ionicons
-                name="checkmark"
-                size={24}
-                color={
-                  canSubmit
-                    ? (tintColor ?? themeColors.text.DEFAULT)
-                    : themeColors.text.muted
-                }
-              />
-            </Pressable>
+            />
           ),
         }}
       />

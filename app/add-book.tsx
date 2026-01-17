@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
-import { Pressable } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import IconButton from "@/components/shared/IconButton";
 import { router, Stack } from "expo-router";
 
 import {
@@ -43,24 +42,19 @@ export const AddBookScreen = () => {
       <Stack.Screen
         options={{
           headerRight: ({ tintColor }) => (
-            <Pressable
+            <IconButton
               onPress={() => formRef.current?.submit()}
               disabled={!canSubmit}
               accessibilityRole="button"
               accessibilityLabel="Save book"
-              hitSlop={10}
+              icon="checkmark"
+              tintColor={
+                canSubmit
+                  ? (tintColor ?? themeColors.text.DEFAULT)
+                  : themeColors.text.muted
+              }
               style={{ opacity: canSubmit ? 1 : 0.4 }}
-            >
-              <Ionicons
-                name="checkmark"
-                size={24}
-                color={
-                  canSubmit
-                    ? (tintColor ?? themeColors.text.DEFAULT)
-                    : themeColors.text.muted
-                }
-              />
-            </Pressable>
+            />
           ),
         }}
       />

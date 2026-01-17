@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Platform, Pressable, Text, View } from "react-native";
 import { router, Stack } from "expo-router";
 import { Picker } from "@react-native-picker/picker";
-import { Ionicons } from "@expo/vector-icons";
 
 import InsightForm, { type InsightFormHandle } from "@/components/InsightForm";
 import { useBooksStore } from "@/store/booksStore";
@@ -10,6 +9,7 @@ import { useInsightsStore } from "@/store/insightsStore";
 import themeColors from "@/utils/colors";
 import { sortBooksForList } from "@/utils/helpers";
 import { Book } from "@/types/book";
+import IconButton from "@/components/shared/IconButton";
 
 const IOS_PICKER_HEIGHT = 140;
 const IOS_PICKER_Y_OFFSET = 24;
@@ -163,24 +163,18 @@ const NewInsightModal = () => {
         options={{
           title: "New Insight",
           headerRight: ({ tintColor }) => (
-            <Pressable
+            <IconButton
               onPress={() => formRef.current?.submit()}
               disabled={!canSubmit}
-              accessibilityRole="button"
               accessibilityLabel="Save insight"
-              hitSlop={10}
               style={{ opacity: canSubmit ? 1 : 0.4 }}
-            >
-              <Ionicons
-                name="checkmark"
-                size={24}
-                color={
-                  canSubmit
-                    ? (tintColor ?? themeColors.text.DEFAULT)
-                    : themeColors.text.muted
-                }
-              />
-            </Pressable>
+              icon="checkmark"
+              tintColor={
+                canSubmit
+                  ? (tintColor ?? themeColors.text.DEFAULT)
+                  : themeColors.text.muted
+              }
+            />
           ),
         }}
       />
