@@ -4,8 +4,11 @@ import { Pressable, Text } from "react-native";
 
 import colors from "@/utils/colors";
 import { DEFAULT_HEADER_OPTIONS } from "@/utils/navigation";
+import { useBooksStore } from "@/store/booksStore";
 
 export const TabsLayout = () => {
+  const { books, hasHydrated } = useBooksStore();
+
   return (
     <Tabs
       screenOptions={{
@@ -26,7 +29,9 @@ export const TabsLayout = () => {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Your Library",
+          title: hasHydrated
+            ? `${books.length} book${books.length === 1 ? "" : "s"}`
+            : "Loading…",
           tabBarLabel: "Library",
           headerRight: () => (
             <Pressable
