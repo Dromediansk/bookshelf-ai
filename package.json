@@ -7,7 +7,8 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "lint": "expo lint",
-    "check-deps": "expo install --fix"
+    "check-deps": "expo install --fix",
+    "update:preview": "eas update --branch preview"
   },
   "dependencies": {
     "@expo-google-fonts/montserrat": "^0.4.2",
