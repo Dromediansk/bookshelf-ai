@@ -32,6 +32,7 @@ export const TabsLayout = () => {
           title: hasHydrated
             ? `${books.length} book${books.length === 1 ? "" : "s"}`
             : "Loading…",
+          headerTitleAlign: "left",
           tabBarLabel: "Library",
           headerRight: () => (
             <Pressable
@@ -62,6 +63,7 @@ export const TabsLayout = () => {
         name="timeline"
         options={{
           title: "Timeline",
+          headerTitleAlign: "left",
           tabBarLabel: "Timeline",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="time-outline" size={size} color={color} />
