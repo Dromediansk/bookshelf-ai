@@ -11,7 +11,7 @@ import {
   isWithinLastNDays,
   sortByDateDesc,
 } from "@/utils/helpers";
-import { LAST_N_DAYS } from "@/utils/contants";
+import { LAST_N_DAYS, TIMELINE_DAYS } from "@/utils/contants";
 
 type TimelineEvent = {
   id: string;
@@ -44,7 +44,7 @@ const buildTimelineEvents = (
     .map((book) => ({
       id: `book:${book.id}`,
       type: "finished-book",
-      createdAt: book.finishedAt ?? book.updatedAt,
+      createdAt: book.updatedAt ?? book.finishedAt,
       bookId: book.id,
       bookTitle: book.title,
     }));
@@ -87,7 +87,10 @@ export const TimelineScreen = () => {
       (n) => n.createdAt,
     )[0];
 
-    const events = buildTimelineEvents(books, insights);
+    const allEvents = buildTimelineEvents(books, insights);
+    const events = allEvents.filter((event) =>
+      isWithinLastNDays(event.createdAt, TIMELINE_DAYS, nowMs),
+    );
 
     return {
       events,
@@ -170,11 +173,9 @@ export const TimelineScreen = () => {
               )}
             </View>
 
-            <Text className="mt-6 text-base font-sansSemibold text-text">
-              Activity
+            <Text className="mt-6 mb-3 text-base font-sansSemibold text-text">
+              Activity in the last {TIMELINE_DAYS} days
             </Text>
-
-            <View className="h-3" />
           </View>
         )}
         renderItem={({ item }) => {
