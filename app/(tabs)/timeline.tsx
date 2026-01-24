@@ -44,7 +44,7 @@ const buildTimelineEvents = (
     .map((book) => ({
       id: `book:${book.id}`,
       type: "finished-book",
-      createdAt: book.updatedAt ?? book.finishedAt,
+      createdAt: book.finishedAt!,
       bookId: book.id,
       bookTitle: book.title,
     }));
@@ -216,7 +216,7 @@ export const TimelineScreen = () => {
                 No activity yet.
               </Text>
               <Text className="mt-1 text-sm font-sans text-text-subtle">
-                Add a book or write a insight to start your timeline.
+                Add a book or write an insight to start your timeline.
               </Text>
             </View>
           ) : events.length === 0 ? (
@@ -225,7 +225,7 @@ export const TimelineScreen = () => {
                 No recent activity to show.
               </Text>
               <Text className="mt-1 text-sm font-sans text-text-subtle">
-                Write a insight or finish a book to see updates here.
+                Write an insight or finish a book to see updates here.
               </Text>
             </View>
           ) : (
