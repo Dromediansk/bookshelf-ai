@@ -23,7 +23,7 @@ type TimelineEvent = {
 
 const buildTimelineEvents = (
   books: Book[],
-  insights: Insight[]
+  insights: Insight[],
 ): TimelineEvent[] => {
   const bookById = new Map(books.map((book) => [book.id, book] as const));
 
@@ -51,7 +51,7 @@ const buildTimelineEvents = (
 
   return sortByDateDesc(
     [...insightEvents, ...finishedBookEvents],
-    (e) => e.createdAt
+    (e) => e.createdAt,
   );
 };
 
@@ -64,36 +64,36 @@ export const TimelineScreen = () => {
 
   const {
     events,
-    weeklyInsights,
-    weeklyFinishedBooks,
-    lastWeeklyInsight,
+    recentInsights,
+    recentFinishedBooks,
+    mostRecentInsight,
     hasAnyData,
   } = useMemo(() => {
     const hasAnyData = books.length > 0 || insights.length > 0;
 
-    const weeklyInsights = insights.filter((insight) =>
-      isWithinLastNDays(insight.createdAt, LAST_N_DAYS, nowMs)
+    const recentInsights = insights.filter((insight) =>
+      isWithinLastNDays(insight.createdAt, LAST_N_DAYS, nowMs),
     );
 
-    const weeklyFinishedBooks = books.filter(
+    const recentFinishedBooks = books.filter(
       (book) =>
         book.status === "finished" &&
         book.finishedAt &&
-        isWithinLastNDays(book.finishedAt, LAST_N_DAYS, nowMs)
+        isWithinLastNDays(book.finishedAt, LAST_N_DAYS, nowMs),
     );
 
-    const lastWeeklyInsight = sortByDateDesc(
-      weeklyInsights,
-      (n) => n.createdAt
+    const mostRecentInsight = sortByDateDesc(
+      recentInsights,
+      (n) => n.createdAt,
     )[0];
 
     const events = buildTimelineEvents(books, insights);
 
     return {
       events,
-      weeklyInsights,
-      weeklyFinishedBooks,
-      lastWeeklyInsight,
+      recentInsights,
+      recentFinishedBooks,
+      mostRecentInsight,
       hasAnyData,
     };
   }, [books, insights, nowMs]);
@@ -108,8 +108,8 @@ export const TimelineScreen = () => {
     );
   }
 
-  const hasWeeklyData =
-    weeklyInsights.length > 0 || weeklyFinishedBooks.length > 0;
+  const hasRecentData =
+    recentInsights.length > 0 || recentFinishedBooks.length > 0;
 
   return (
     <View className="flex-1 bg-surface-muted py-screen">
@@ -122,12 +122,12 @@ export const TimelineScreen = () => {
           <View>
             <View className="rounded-card border border-border bg-surface px-card py-card">
               <Text className="text-base font-sansSemibold text-text">
-                This week in your reading
+                Last 3 months in your reading
               </Text>
 
-              {!hasWeeklyData ? (
+              {!hasRecentData ? (
                 <Text className="mt-3 text-sm font-sans text-text-muted">
-                  Start reading and writing insights to see your weekly summary.
+                  Start reading and writing insights to see your summary.
                 </Text>
               ) : (
                 <View className="mt-3">
@@ -136,7 +136,7 @@ export const TimelineScreen = () => {
                       Insights written
                     </Text>
                     <Text className="text-sm font-sansSemibold text-text">
-                      {weeklyInsights.length}
+                      {recentInsights.length}
                     </Text>
                   </View>
 
@@ -145,24 +145,24 @@ export const TimelineScreen = () => {
                       Books finished
                     </Text>
                     <Text className="text-sm font-sansSemibold text-text">
-                      {weeklyFinishedBooks.length}
+                      {recentFinishedBooks.length}
                     </Text>
                   </View>
 
                   <View className="mt-4">
                     <Text className="text-sm font-sans text-text-muted">
-                      Last insight this week
+                      Most recent insight
                     </Text>
-                    {!!lastWeeklyInsight ? (
+                    {!!mostRecentInsight ? (
                       <Text
                         className="mt-2 text-sm font-sans text-text"
                         numberOfLines={2}
                       >
-                        {lastWeeklyInsight.content}
+                        {mostRecentInsight.content}
                       </Text>
                     ) : (
                       <Text className="mt-2 text-sm font-sans text-text-subtle">
-                        No insights yet this week.
+                        No insights in the last 3 months.
                       </Text>
                     )}
                   </View>
